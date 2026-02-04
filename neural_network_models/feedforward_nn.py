@@ -1,7 +1,11 @@
 import torch.nn as nn
 
 class FeedforwardNN(nn.Module):
-    def __init__(self, input_neuron_num, h1_neuron_num, output_neuron_num):
+    def __init__(self, 
+                 input_neuron_num :int, 
+                 h1_neuron_num :int, 
+                 output_neuron_num :int) -> None:
+        
         super(FeedforwardNN, self).__init__()
         # 1st fully connected (hidden) layer configuration
         self.h1_linear_func = nn.Linear(input_neuron_num, h1_neuron_num)

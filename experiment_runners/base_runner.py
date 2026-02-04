@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 
+from configs.data_set_config import DataSetConfig
+from configs.experiment_config import ExperimentConfig
+from configs.noise_config import NoiseConfig
 from utils.data_generation import generate_vectors, generate_scalars
 
 from models.experiment_statistics import ExperimentStatistics
@@ -10,44 +13,42 @@ import numpy as np
 
 
 class BaseRunner(ABC):
-    def __init__(self, experiment_config, data_set_config, noise_config):
-        self.experiment_config = experiment_config
-        self.data_set_config = data_set_config
-        self.noise_config = noise_config
-
-        # statistics
-        self.stats = ExperimentStatistics()
-        self.stats.min = 0
-        self.stats.max = 0
-        self.stats.mean = 0
-        self.stats.std = 0
+    def __init__(self, experiment_config :ExperimentConfig, data_set_config :DataSetConfig, noise_config :NoiseConfig):
+        self.experiment_config :ExperimentConfig = experiment_config
+        self.data_set_config :DataSetConfig = data_set_config
+        self.noise_config :NoiseConfig = noise_config
 
 
     def run(self) -> ExperimentStatistics:
+        avg_min :float = 0.0
+        avg_max :float = 0.0
+        avg_mean :float = 0.0
+        avg_std :float = 0.0
+
         for _ in range(self.experiment_config.try_count):
             curr_try_stats = self._run_experiment()
 
             # save current try statistics
-            self.stats.min += curr_try_stats.min
-            self.stats.max += curr_try_stats.max
-            self.stats.mean += curr_try_stats.mean
-            self.stats.std += curr_try_stats.std
+            avg_min += curr_try_stats.min
+            avg_max += curr_try_stats.max
+            avg_mean += curr_try_stats.mean
+            avg_std += curr_try_stats.std
 
         # calculate statistic average
-        self.stats.min /= self.experiment_config.try_count
-        self.stats.max /= self.experiment_config.try_count
-        self.stats.mean /= self.experiment_config.try_count
-        self.stats.std /= self.experiment_config.try_count
+        avg_min /= self.experiment_config.try_count
+        avg_max /= self.experiment_config.try_count
+        avg_mean /= self.experiment_config.try_count
+        avg_std /= self.experiment_config.try_count
 
-        return self.stats
+        return ExperimentStatistics(avg_min, avg_max, avg_mean, avg_std)
 
 
     @abstractmethod
-    def _run_experiment(self):
+    def _run_experiment(self) -> ExperimentStatistics:
         pass
 
 
-    def _generate_raw_data_set(self):
+    def _generate_raw_data_set(self) -> DataSet:
         vectors = generate_vectors(
             self.data_set_config.input_dimension, 
             self.data_set_config.component_domain, 

@@ -1,6 +1,6 @@
 import numpy as np
 
-def generate_vectors(dimension, domain_range, set_size):
+def generate_vectors(dimension :int, domain_range, set_size :int):
     lower_end, higher_end = domain_range
     vectors = np.random.uniform(lower_end, higher_end, size = (set_size, dimension))
     return vectors
