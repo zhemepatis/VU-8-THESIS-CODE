@@ -92,12 +92,10 @@ class BaseRunner(ABC):
         data_set.scalars += noise
 
 
-    def _calculate_statistics(self, absolute_errors):
-        experiment_stats = ExperimentStatistics()
+    def _calculate_statistics(self, absolute_errors) -> ExperimentStatistics:
+        curr_min :float = np.min(absolute_errors)
+        curr_max :float = np.max(absolute_errors)
+        curr_mean :float = np.mean(absolute_errors)
+        curr_std :float = np.std(absolute_errors)
 
-        experiment_stats.min = np.min(absolute_errors)
-        experiment_stats.max = np.max(absolute_errors)
-        experiment_stats.mean = np.mean(absolute_errors)
-        experiment_stats.std = np.std(absolute_errors)
-
-        return experiment_stats
+        return ExperimentStatistics(curr_min, curr_max, curr_mean, curr_std)

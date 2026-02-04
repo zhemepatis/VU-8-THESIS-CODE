@@ -7,14 +7,16 @@ class FeedforwardNN(nn.Module):
                  output_neuron_num :int) -> None:
         
         super(FeedforwardNN, self).__init__()
+        
         # 1st fully connected (hidden) layer configuration
-        self.h1_linear_func = nn.Linear(input_neuron_num, h1_neuron_num)
-        self.h1_activation_func = nn.Sigmoid()
+        self.h1_linear_func :int = nn.Linear(input_neuron_num, h1_neuron_num)
+        self.h1_activation_func :int = nn.Sigmoid()
 
         # output layer configuration
         # note: since our goal is to predict a real number,
         #       we do not use any activation function in output layer
-        self.output_linear_func = nn.Linear(h1_neuron_num, output_neuron_num)
+        self.output_linear_func :int = nn.Linear(h1_neuron_num, output_neuron_num)
+
 
     def forward(self, x):
         # 1st hidden layer
