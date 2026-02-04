@@ -10,9 +10,10 @@ import numpy as np
 
 
 class BaseRunner(ABC):
-    def __init__(self, experiment_config, data_set_config):
+    def __init__(self, experiment_config, data_set_config, noise_config):
         self.experiment_config = experiment_config
         self.data_set_config = data_set_config
+        self.noise_config = noise_config
 
         # statistics
         self.stats = ExperimentStatistics()
@@ -22,7 +23,7 @@ class BaseRunner(ABC):
         self.stats.std = 0
 
 
-    def run(self):
+    def run(self) -> ExperimentStatistics:
         for _ in range(self.experiment_config.try_count):
             curr_try_stats = self._run_experiment()
 
@@ -37,6 +38,8 @@ class BaseRunner(ABC):
         self.max /= self.experiment_config.try_count
         self.mean /= self.experiment_config.try_count
         self.std /= self.experiment_config.try_count
+
+        return self.stats
 
 
     @abstractmethod
@@ -55,14 +58,15 @@ class BaseRunner(ABC):
             self.vectors, 
             self.data_set_config.benchmark_function
         )
-        
-        return vectors, scalars
-    
-    def _split_data_set(self, vectors, scalars):
+
+        return DataSet(vectors, scalars)
+
+
+    def _split_data_set(self, raw_data_set):
         # separate training data from validation and test data
         training_vectors, temp_vectors, training_scalars, temp_scalars = train_test_split(
-            vectors, 
-            scalars, 
+            raw_data_set.vectors, 
+            raw_data_set.scalars, 
             test_size = (self.data_set_config.validation_set_fraction + self.data_set_config.test_set_fraction), 
             random_state = 42
         )
@@ -80,6 +84,11 @@ class BaseRunner(ABC):
         test_set = DataSet(test_vectors, test_scalars)
 
         return training_set, validation_set, test_set
+    
+
+    def _apply_noise(self, data_set):
+        noise = np.random.normal(self.noise_config.mean, self.noise_config.std, len(data_set.scalars))
+        data_set.scalars += noise
 
 
     def _calculate_statistics(self, absolute_errors):
