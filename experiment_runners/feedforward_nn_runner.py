@@ -1,16 +1,26 @@
 import numpy as np
+from configs.data_set_config import DataSetConfig
+from configs.experiment_config import ExperimentConfig
+from configs.feedforward_nn_config import FeedforwardNNConfig
+from configs.noise_config import NoiseConfig
 from experiment_runners.base_runner import BaseRunner
 from sklearn.preprocessing import MinMaxScaler
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.utils.data import DataLoader, TensorDataset
 from models.experiment_statistics import ExperimentStatistics
 from neural_network_models.feedforward_nn import FeedforwardNN
 
 class FeedforwardNNRunner(BaseRunner):
-    def __init__(self, experiment_config, data_set_config, noise_config, feedforward_nn_config):
+    def __init__(self, 
+                 experiment_config :ExperimentConfig, 
+                 data_set_config :DataSetConfig, 
+                 noise_config :NoiseConfig, 
+                 feedforward_nn_config :FeedforwardNNConfig) -> None:
+        
         super().__init__(experiment_config, data_set_config, noise_config)
-        self.feedforward_nn_configuration = feedforward_nn_config
+        self.feedforward_nn_configuration :FeedforwardNNConfig = feedforward_nn_config
 
         # normalization
         self.vector_scaler = None
@@ -45,8 +55,8 @@ class FeedforwardNNRunner(BaseRunner):
 
         # create model
         self.model = FeedforwardNN(
-            input_neuron_num = self.data_set_config.dimention, 
-            h1_neuron_num = self.feedforward_nn_configuration.h1_neuron_number, 
+            input_neuron_num = self.data_set_config.input_dimension, 
+            h1_neuron_num = self.feedforward_nn_configuration.h1_neuron_num, 
             output_neuron_num = self.feedforward_nn_configuration.output_neuron_num
         )
         
@@ -91,8 +101,8 @@ class FeedforwardNNRunner(BaseRunner):
 
 
     def __get_data_loader(self, vectors_tensor, scalars_tensor):
-        tensor_data_set = torch.TensorDataset(vectors_tensor, scalars_tensor)
-        data_loader = torch.DataLoader(tensor_data_set, batch_size = self.feedforward_nn_configuration.batch_size, shuffle = True)
+        tensor_data_set = TensorDataset(vectors_tensor, scalars_tensor)
+        data_loader = DataLoader(tensor_data_set, batch_size = self.feedforward_nn_configuration.batch_size, shuffle = True)
         
         return data_loader
 

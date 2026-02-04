@@ -28,16 +28,16 @@ class BaseRunner(ABC):
             curr_try_stats = self._run_experiment()
 
             # save current try statistics
-            self.statistics.min += curr_try_stats.min
-            self.statistics.max += curr_try_stats.max
-            self.statistics.mean += curr_try_stats.mean
-            self.statistics.std += curr_try_stats.std
+            self.stats.min += curr_try_stats.min
+            self.stats.max += curr_try_stats.max
+            self.stats.mean += curr_try_stats.mean
+            self.stats.std += curr_try_stats.std
 
         # calculate statistic average
-        self.min /= self.experiment_config.try_count
-        self.max /= self.experiment_config.try_count
-        self.mean /= self.experiment_config.try_count
-        self.std /= self.experiment_config.try_count
+        self.stats.min /= self.experiment_config.try_count
+        self.stats.max /= self.experiment_config.try_count
+        self.stats.mean /= self.experiment_config.try_count
+        self.stats.std /= self.experiment_config.try_count
 
         return self.stats
 
@@ -49,13 +49,13 @@ class BaseRunner(ABC):
 
     def _generate_raw_data_set(self):
         vectors = generate_vectors(
-            self.data_set_config.input_dimention, 
+            self.data_set_config.input_dimension, 
             self.data_set_config.component_domain, 
             self.data_set_config.data_set_size
         )
         
         scalars = generate_scalars(
-            self.vectors, 
+            vectors, 
             self.data_set_config.benchmark_function
         )
 

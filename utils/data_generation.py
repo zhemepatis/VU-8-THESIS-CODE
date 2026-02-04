@@ -1,8 +1,8 @@
 import numpy as np
 
-def generate_vectors(dimentions, domain_range, set_size):
+def generate_vectors(dimension, domain_range, set_size):
     lower_end, higher_end = domain_range
-    vectors = np.random.uniform(lower_end, higher_end, size = (set_size, dimentions))
+    vectors = np.random.uniform(lower_end, higher_end, size = (set_size, dimension))
     return vectors
 
 def generate_scalars(vectors, benchmark_function):

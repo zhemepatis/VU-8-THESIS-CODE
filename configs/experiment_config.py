@@ -1,3 +1,3 @@
 class ExperimentConfig:
-    def __init__(self, try_count):
-        self.try_count = try_count
+    def __init__(self, try_count :int) -> None:
+        self.try_count :int = try_count

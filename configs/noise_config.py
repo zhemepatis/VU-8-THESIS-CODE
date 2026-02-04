@@ -1,4 +1,4 @@
 class NoiseConfig:
-    def __init__(self, mean, std):
-        self.mean = mean
-        self.std = std
+    def __init__(self, mean :float, std :float):
+        self.mean :float = mean
+        self.std :float = std

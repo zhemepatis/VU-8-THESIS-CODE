@@ -1,12 +1,20 @@
 class DataSetConfig:
-    def __init__(self, benchmark_function, input_dimention, component_domain, data_set_size):
+    def __init__(self, 
+                 benchmark_function, 
+                 input_dimension :int, 
+                 component_domain, 
+                 data_set_size :int, 
+                 training_set_fraction :float, 
+                 validation_set_fraction :float, 
+                 test_set_fraction :float) -> None:
+        
         # data generation configuration
         self.benchmark_function = benchmark_function
-        self.dimention = input_dimention
+        self.input_dimension :int = input_dimension
         self.component_domain = component_domain
-        self.data_set_size = data_set_size
+        self.data_set_size :int = data_set_size
 
         # data split configuration
-        self.training_set_fraction = 0.7
-        self.validation_set_fraction = 0.15
-        self.test_set_fraction = 0.15
+        self.training_set_fraction :float = training_set_fraction
+        self.validation_set_fraction :float = validation_set_fraction
+        self.test_set_fraction :float = test_set_fraction
