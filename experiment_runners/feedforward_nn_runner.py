@@ -152,7 +152,7 @@ class FeedforwardNNRunner(BaseRunner):
             epoch_validation_loss /= len(validation_data_loader.dataset)
             validation_losses.append(epoch_validation_loss)
             
-            if self.experiment_config.verbose and (epoch + 1) % 10 == 0:
+            if self.training_config.verbose and (epoch + 1) % 10 == 0:
                 print(f"[{epoch + 1}] Training loss: {epoch_training_loss:.6f} | Validation loss: {epoch_validation_loss:.6f}")
 
             # stop condition
@@ -163,13 +163,13 @@ class FeedforwardNNRunner(BaseRunner):
             else:
                 patience_tries += 1
 
-                if self.experiment_config.verbose and patience_tries >= self.training_config.patience_limit:
+                if self.training_config.verbose and patience_tries >= self.training_config.patience_limit:
                     print(f"Early stopping at epoch {epoch + 1} (no improvement for {self.training_config.patience_limit} epochs).")
                     break
 
         # load best model
         self.model.load_state_dict(best_model_state)
-        if self.experiment_config.verbose:
+        if self.training_config.verbose:
             print(f"Loaded best model with validation loss: {best_validation_loss:.6f}")
 
 
