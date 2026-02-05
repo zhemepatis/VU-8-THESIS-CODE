@@ -54,7 +54,9 @@ class BaseRunner(ABC):
         pass
 
 
-    def _split_data_set(self, raw_data_set):
+    def _split_data_set(self, 
+                        raw_data_set :DataSet) -> tuple[DataSet, DataSet, DataSet]:
+        
         # separate training data from validation and test data
         training_vectors, temp_vectors, training_scalars, temp_scalars = train_test_split(
             raw_data_set.vectors, 
@@ -71,16 +73,19 @@ class BaseRunner(ABC):
             random_state = 42
         )
 
-        training_set = DataSet(training_vectors, training_scalars)
-        validation_set = DataSet(validation_vectors, validation_scalars)
-        test_set = DataSet(test_vectors, test_scalars)
+        training_set :DataSet = DataSet(training_vectors, training_scalars)
+        validation_set :DataSet = DataSet(validation_vectors, validation_scalars)
+        test_set :DataSet = DataSet(test_vectors, test_scalars)
 
         return training_set, validation_set, test_set
-        
 
-    def _apply_noise(self, data_set):
+
+    def _apply_noise(self, 
+                     data_set :DataSet) -> DataSet:
+        
         noise = np.random.normal(self.noise_config.mean, self.noise_config.std, len(data_set.scalars))
         data_set.scalars += noise
+        return data_set
 
 
     def _calculate_statistics(self, absolute_errors) -> ExperimentStatistics:

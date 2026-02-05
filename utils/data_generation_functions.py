@@ -6,7 +6,7 @@ class DataGenerationFunctions:
 
     @staticmethod
     def generate_data_set(dimension :int,
-                          domain_range :tuple[int],
+                          domain_range :tuple[int, int],
                           set_size :int,
                           benchmark_function :function) -> DataSet:
     
@@ -17,7 +17,7 @@ class DataGenerationFunctions:
 
     @staticmethod
     def generate_vectors(dimension :int,
-                         domain_range :tuple[int],
+                         domain_range :tuple[int, int],
                          set_size :int) -> np.ndarray:
     
         lower_end, higher_end = domain_range

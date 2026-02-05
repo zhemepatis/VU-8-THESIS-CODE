@@ -1,7 +1,9 @@
+import numpy as np
+
 class DataSet:
     def __init__(self, 
-                 vectors :list[float], 
-                 scalars :list[float]):
+                 vectors :np.ndarray, 
+                 scalars :np.ndarray) -> None:
         
-        self.vectors :list[float] = vectors
-        self.scalars :list[float] = scalars
+        self.vectors :np.ndarray = vectors
+        self.scalars :np.ndarray = scalars

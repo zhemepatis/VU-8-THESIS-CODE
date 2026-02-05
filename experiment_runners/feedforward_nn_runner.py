@@ -9,10 +9,15 @@ from sklearn.preprocessing import MinMaxScaler
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from models.data_set import DataSet
+from models.data_set_tensor import DataSetTensors
 from neural_network_models.feedforward_nn import FeedforwardNN
 from torch.utils.data import DataLoader, TensorDataset
 from models.experiment_statistics import ExperimentStatistics
 from neural_network_models.feedforward_nn import FeedforwardNN
+from utils.data_generation_functions import DataGenerationFunctions
+from utils.noise_generation_functions import NoiseGenerationFunctions
+from utils.normalization_functions import NormalizationFunctions
 
 class FeedforwardNNRunner(BaseRunner):
     def __init__(self, 
@@ -26,86 +31,66 @@ class FeedforwardNNRunner(BaseRunner):
         self.training_config :TrainingConfig = training_config
         self.fnn_config :FeedforwardNNConfig = fnn_config
 
-        self.model = None
-        self.loss_func = None
-        self.loss_optimization_func = None
-
-        # normalization
-        self.vector_scaler = None
-        self.scalar_scaler = None
-
 
     def _run_experiment(self) -> ExperimentStatistics:
-        data_set = self._generate_raw_data_set()
-        training_set, validation_set, test_set = self._split_data_set(data_set)
+        data_set_raw :DataSet = DataGenerationFunctions.generate_data_set()
         
-        self.__apply_noise(training_set, validation_set)
-        self.__normalize(training_set, validation_set, test_set)
+        # split data into training, validation, testing data sets
+        splits :tuple[DataSet, DataSet, DataSet] = self._split_data_set(data_set_raw)
+        
+        training_set :DataSet = splits[0]
+        validation_set :DataSet = splits[1]
+        test_set :DataSet = splits[2]
+
+        # generate noise
+        if self.noise_config != None:
+            training_set = NoiseGenerationFunctions.apply_gaussian_noise(self.noise_config.mean, self.noise_config.std, training_set)
+            validation_set = NoiseGenerationFunctions.apply_gaussian_noise(self.noise_config.mean, self.noise_config.std, validation_set)
+
+        # normalize data sets
+        vector_scaler = MinMaxScaler().fit(training_set.vectors)
+        scalar_scaler = MinMaxScaler().fit(training_set.scalars.reshape(-1, 1))
+
+        training_set = NormalizationFunctions.normalize_data_set(training_set, vector_scaler, scalar_scaler)
+        validation_set = NormalizationFunctions.normalize_data_set(validation_set, vector_scaler, scalar_scaler)
+        test_set = NormalizationFunctions.normalize_data_set(test_set, vector_scaler, scalar_scaler)
         
         # convert data sets to tensors
-        training_vectors_tensor = torch.FloatTensor(training_set.vectors)
-        training_scalars_tensor = torch.FloatTensor(training_set.scalars)
-
-        validation_vectors_tensor = torch.FloatTensor(validation_set.vectors)
-        validation_scalars_tensor = torch.FloatTensor(validation_set.scalars)
-
-        test_vectors_tensor = torch.FloatTensor(test_set.vectors)
-        test_scalars_tensor = torch.FloatTensor(test_set.scalars)
+        training_tensors = self.__convert_to_tensors(training_set)
+        validation_tensors = self.__convert_to_tensors(validation_set)
+        test_tensors = self.__convert_to_tensors(test_set)
 
         # create data loaders
-        training_data_loader = self.__get_data_loader(training_vectors_tensor, training_scalars_tensor)
-        validation_data_loader = self.__get_data_loader(validation_vectors_tensor, validation_scalars_tensor)
+        training_data_loader = self.__get_data_loader(training_tensors)
+        validation_data_loader = self.__get_data_loader(validation_tensors)
 
-        self.model = FeedforwardNN(
+        # create feedforward NN model
+        model = FeedforwardNN(
             input_neuron_num = self.data_set_config.input_dimension, 
             h1_neuron_num = 70, 
             output_neuron_num = 1
         )
 
-        self.loss_func = nn.MSELoss()
-        self.loss_optimization_func = optim.Adam(self.model.parameters(), lr = self.training_config.learning_rate)
+        loss_func = nn.MSELoss()
+        loss_optimization_func = optim.Adam(self.model.parameters(), lr = self.training_config.learning_rate)
 
-        self.__train(training_data_loader, validation_data_loader)
-        predicted_scalars_tensor = self.__test(test_vectors_tensor, test_scalars_tensor)
+        model = self.__train(model, loss_func, loss_optimization_func, training_data_loader, validation_data_loader)
 
-        predicted_scalars = predicted_scalars_tensor.numpy()
-        test_scalars = test_scalars_tensor.numpy()
+        # evaluate results
+        prediction_tensor = self.__test(model, test_tensors)
 
-        predicted_scalars = self.scalar_scaler.inverse_transform(predicted_scalars)
-        test_scalars = self.scalar_scaler.inverse_transform(test_scalars)
+        prediction_vectors :np.ndarray = test_set.vectors
+        prediction_scalars :np.ndarray = prediction_tensor.numpy()
+        prediction_set :DataSet = DataSet(prediction_vectors, prediction_scalars)
 
-        abs_err_set = np.abs(predicted_scalars - test_scalars)
-        stats = self._calculate_statistics(abs_err_set)
-        return stats
+        prediction_set :DataSet = NormalizationFunctions.denormalize_data_set(prediction_set, vector_scaler, scalar_scaler)
+        test_set :DataSet = NormalizationFunctions.denormalize_data_set(test_set, vector_scaler, scalar_scaler)
 
-
-    def __apply_noise(self, training_set, validation_set):
-        if self.noise_config != None:
-            self._apply_noise(training_set)
-            self._apply_noise(validation_set)
+        abs_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars)
+        return self._calculate_statistics(abs_err_set)
 
 
-    def __init_scalers(self, data_set) -> None:
-        self.vector_scaler = MinMaxScaler().fit(data_set.vectors)
-        self.scalar_scaler = MinMaxScaler().fit(data_set.scalars.reshape(-1, 1))
-
-
-    def __normalize(self, training_set, validation_set, test_set) -> None:
-        self.__init_scalers(training_set)
-
-        training_set = self._normalize_data_set(training_set)
-        validation_set = self._normalize_data_set(validation_set)
-        test_set = self._normalize_data_set(test_set)
-
-
-    def __get_data_loader(self, vectors_tensor, scalars_tensor) -> DataLoader:
-        tensor_data_set = TensorDataset(vectors_tensor, scalars_tensor)
-        data_loader = DataLoader(tensor_data_set, batch_size = self.training_config.batch_size, shuffle = True)
-        
-        return data_loader
-
-
-    def __train(self, training_data_loader, validation_data_loader) -> None:
+    def __train(self, model, loss_func, loss_optimization_func, training_data_loader, validation_data_loader) -> None:
         training_losses = []
         validation_losses = []
 
@@ -116,18 +101,18 @@ class FeedforwardNNRunner(BaseRunner):
 
         for epoch in range(self.training_config.epoch_limit):
             # training step
-            self.model.train()
+            model.train()
             epoch_training_loss = 0.0
 
             for batch_vectors, batch_scalars in training_data_loader:
                 # pass forward
-                predictions = self.model(batch_vectors)
-                loss = self.loss_func(predictions, batch_scalars)
+                predictions = model(batch_vectors)
+                loss = loss_func(predictions, batch_scalars)
                 
                 # back-propagation
-                self.loss_optimization_func.zero_grad()
+                loss_optimization_func.zero_grad()
                 loss.backward()
-                self.loss_optimization_func.step()
+                loss_optimization_func.step()
                 
                 epoch_training_loss += loss.item() * batch_vectors.size(0)
 
@@ -136,13 +121,13 @@ class FeedforwardNNRunner(BaseRunner):
             training_losses.append(epoch_training_loss)
 
             # validation step
-            self.model.eval()
+            model.eval()
             epoch_validation_loss = 0.0
             
             with torch.no_grad():
                 for batch_vectors, batch_scalars in validation_data_loader:
-                    predictions = self.model(batch_vectors)
-                    loss = self.loss_func(predictions, batch_scalars)
+                    predictions = model(batch_vectors)
+                    loss = loss_func(predictions, batch_scalars)
                     epoch_validation_loss += loss.item() * batch_vectors.size(0)
 
             epoch_validation_loss /= len(validation_data_loader.dataset)
@@ -164,18 +149,36 @@ class FeedforwardNNRunner(BaseRunner):
                     break
 
         # load best model
-        self.model.load_state_dict(best_model_state)
+        model.load_state_dict(best_model_state)
         if self.training_config.verbose:
             print(f"Loaded best model with validation loss: {best_validation_loss:.6f}")
 
+        return model
+    
 
-    def __test(self, test_vectors_tensor, test_scalars_tensor):
-        self.model.eval()
+    def __test(self, model, test_tensors :DataSetTensors):
+        model.eval()
 
-        # get predictions
         with torch.no_grad():
-            test_set_predictions = self.model(test_vectors_tensor)
-            self.loss_func(test_set_predictions, test_scalars_tensor)
+            prediction_tensor = model(test_tensors.vector_tensor)
 
-        return test_set_predictions
+        return prediction_tensor
 
+    
+
+    def __convert_to_tensors(self, 
+                             data_set :DataSet) -> tuple[torch.FloatTensor, torch.FloatTensor]:
+        
+        vector_tensor = torch.FloatTensor(data_set.vectors)
+        scalar_tensor = torch.FloatTensor(data_set.scalars)
+
+        return DataSetTensors(vector_tensor, scalar_tensor)
+
+
+    def __get_data_loader(self,
+                          data_set_tensors :DataSetTensors) -> DataLoader:
+        
+        tensor_data_set :TensorDataset = TensorDataset(data_set_tensors.vector_tensor, data_set_tensors.scalar_tensor)
+        data_loader :DataLoader  = DataLoader(tensor_data_set, batch_size = self.training_config.batch_size, shuffle = True)
+        
+        return data_loader
