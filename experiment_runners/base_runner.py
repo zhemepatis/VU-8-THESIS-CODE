@@ -3,7 +3,6 @@ from abc import ABC, abstractmethod
 from configs.data_set_config import DataSetConfig
 from configs.experiment_config import ExperimentConfig
 from configs.noise_config import NoiseConfig
-from utils.data_generation import generate_vectors, generate_scalars
 
 from models.experiment_statistics import ExperimentStatistics
 from models.data_set import DataSet
@@ -16,7 +15,7 @@ class BaseRunner(ABC):
     def __init__(self, 
                  experiment_config :ExperimentConfig, 
                  data_set_config :DataSetConfig, 
-                 noise_config :NoiseConfig):
+                 noise_config :NoiseConfig) -> None:
         
         self.experiment_config :ExperimentConfig = experiment_config
         self.data_set_config :DataSetConfig = data_set_config
@@ -55,21 +54,6 @@ class BaseRunner(ABC):
         pass
 
 
-    def _generate_raw_data_set(self) -> DataSet:
-        vectors = generate_vectors(
-            self.data_set_config.input_dimension, 
-            self.data_set_config.component_domain, 
-            self.data_set_config.data_set_size
-        )
-        
-        scalars = generate_scalars(
-            vectors, 
-            self.data_set_config.benchmark_function
-        )
-
-        return DataSet(vectors, scalars)
-
-
     def _split_data_set(self, raw_data_set):
         # separate training data from validation and test data
         training_vectors, temp_vectors, training_scalars, temp_scalars = train_test_split(
@@ -92,21 +76,7 @@ class BaseRunner(ABC):
         test_set = DataSet(test_vectors, test_scalars)
 
         return training_set, validation_set, test_set
-    
-
-    def _normalize_data_set(self, data_set):
-        data_set.vectors = self._normalize_vector_set(self.vector_scaler)
-        data_set.scalars = self._normalize_scalar_set(self.scalar_scaler)
-        return data_set
-
-
-    def _normalize_vector_set(self, vectors):
-        return self.vector_scaler.transform(vectors)
-
-
-    def _normalize_scalar_set(self, scalars):
-        return self.scalar_scaler.transform(scalars.reshape(-1, 1))
-    
+        
 
     def _apply_noise(self, data_set):
         noise = np.random.normal(self.noise_config.mean, self.noise_config.std, len(data_set.scalars))
