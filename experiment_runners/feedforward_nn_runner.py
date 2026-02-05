@@ -172,7 +172,7 @@ class FeedforwardNNRunner(BaseRunner):
         vectors = data_set_tensors.vector_tensor.numpy()
         scalars = data_set_tensors.scalar_tensor.numpy()
 
-        return DataSet(vectors, vectors)
+        return DataSet(vectors, scalars)
 
 
     def __convert_to_tensors(self, 
