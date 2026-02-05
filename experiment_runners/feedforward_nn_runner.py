@@ -15,11 +15,13 @@ from neural_network_models.feedforward_nn import FeedforwardNN
 from torch.utils.data import DataLoader, TensorDataset
 from models.experiment_statistics import ExperimentStatistics
 from neural_network_models.feedforward_nn import FeedforwardNN
-from utils.data_generation_functions import DataGenerationFunctions
-from utils.noise_generation_functions import NoiseGenerationFunctions
-from utils.normalization_functions import NormalizationFunctions
+from utils.data_generation_funcs import DataGenerationFunctions
+from utils.noise_generation_funcs import NoiseGenerationFunctions
+from utils.normalization_funcs import NormalizationFunctions
+from utils.tensor_conversion_funcs import TensorConversionFunctions
 
 class FeedforwardNNRunner(BaseRunner):
+    
     def __init__(self, 
                  experiment_config :ExperimentConfig, 
                  data_set_config :DataSetConfig, 
@@ -56,9 +58,9 @@ class FeedforwardNNRunner(BaseRunner):
         test_set = NormalizationFunctions.normalize_data_set(test_set, vector_scaler, scalar_scaler)
         
         # convert data sets to tensors
-        training_tensors = self.__convert_to_tensors(training_set)
-        validation_tensors = self.__convert_to_tensors(validation_set)
-        test_tensors = self.__convert_to_tensors(test_set)
+        training_tensors = TensorConversionFunctions.convert_to_tensors(training_set)
+        validation_tensors = TensorConversionFunctions.convert_to_tensors(validation_set)
+        test_tensors = TensorConversionFunctions.convert_to_tensors(test_set)
 
         # create data loaders
         training_data_loader = self.__get_data_loader(training_tensors)
@@ -78,7 +80,7 @@ class FeedforwardNNRunner(BaseRunner):
 
         # evaluate results
         prediction_tensors :DataSetTensors = self.__test(model, test_tensors)
-        prediction_set :DataSet = self.__convert_to_data_set(prediction_tensors)
+        prediction_set :DataSet = TensorConversionFunctions.convert_to_data_set(prediction_tensors)
 
         prediction_set :DataSet = NormalizationFunctions.denormalize_data_set(prediction_set, vector_scaler, scalar_scaler)
         test_set :DataSet = NormalizationFunctions.denormalize_data_set(test_set, vector_scaler, scalar_scaler)
@@ -164,24 +166,6 @@ class FeedforwardNNRunner(BaseRunner):
 
         prediction_tensors :DataSetTensors = DataSetTensors(test_tensors.vector_tensor, prediction_scalars_tensor)
         return prediction_tensors
-
-
-    def __convert_to_data_set(self,
-                              data_set_tensors :DataSetTensors) -> DataSet:
-        
-        vectors = data_set_tensors.vector_tensor.numpy()
-        scalars = data_set_tensors.scalar_tensor.numpy()
-
-        return DataSet(vectors, scalars)
-
-
-    def __convert_to_tensors(self, 
-                             data_set :DataSet) -> DataSetTensors:
-        
-        vector_tensor = torch.FloatTensor(data_set.vectors)
-        scalar_tensor = torch.FloatTensor(data_set.scalars)
-
-        return DataSetTensors(vector_tensor, scalar_tensor)
 
 
     def __get_data_loader(self,
