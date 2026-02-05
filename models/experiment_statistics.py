@@ -1,5 +1,13 @@
+from dataclasses import dataclass
+
+@dataclass(frozen = True)
 class ExperimentStatistics:
-    def __init__(self, min :float, max :float, mean :float, std :float):
+    def __init__(self, 
+                 min :float, 
+                 max :float, 
+                 mean :float, 
+                 std :float):
+        
         self.min :float = min
         self.max :float = max
         self.mean :float = mean
