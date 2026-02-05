@@ -13,7 +13,11 @@ import numpy as np
 
 
 class BaseRunner(ABC):
-    def __init__(self, experiment_config :ExperimentConfig, data_set_config :DataSetConfig, noise_config :NoiseConfig):
+    def __init__(self, 
+                 experiment_config :ExperimentConfig, 
+                 data_set_config :DataSetConfig, 
+                 noise_config :NoiseConfig):
+        
         self.experiment_config :ExperimentConfig = experiment_config
         self.data_set_config :DataSetConfig = data_set_config
         self.noise_config :NoiseConfig = noise_config
