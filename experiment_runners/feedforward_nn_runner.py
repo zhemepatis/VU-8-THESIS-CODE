@@ -77,11 +77,8 @@ class FeedforwardNNRunner(BaseRunner):
         model = self.__train(model, loss_func, loss_optimization_func, training_data_loader, validation_data_loader)
 
         # evaluate results
-        prediction_tensor = self.__test(model, test_tensors)
-
-        prediction_vectors :np.ndarray = test_set.vectors
-        prediction_scalars :np.ndarray = prediction_tensor.numpy()
-        prediction_set :DataSet = DataSet(prediction_vectors, prediction_scalars)
+        prediction_tensors :DataSetTensors = self.__test(model, test_tensors)
+        prediction_set :DataSet = self.__convert_to_data_set(prediction_tensors)
 
         prediction_set :DataSet = NormalizationFunctions.denormalize_data_set(prediction_set, vector_scaler, scalar_scaler)
         test_set :DataSet = NormalizationFunctions.denormalize_data_set(test_set, vector_scaler, scalar_scaler)
@@ -156,18 +153,30 @@ class FeedforwardNNRunner(BaseRunner):
         return model
     
 
-    def __test(self, model, test_tensors :DataSetTensors):
+    def __test(self, 
+               model :FeedforwardNN, 
+               test_tensors :DataSetTensors) -> DataSetTensors:
+        
         model.eval()
 
         with torch.no_grad():
-            prediction_tensor = model(test_tensors.vector_tensor)
+            prediction_scalars_tensor = model(test_tensors.vector_tensor)
 
-        return prediction_tensor
+        prediction_tensors :DataSetTensors = DataSetTensors(test_tensors.vector_tensor, prediction_scalars_tensor)
+        return prediction_tensors
 
-    
+
+    def __convert_to_data_set(self,
+                              data_set_tensors :DataSetTensors) -> DataSet:
+        
+        vectors = data_set_tensors.vector_tensor.numpy()
+        scalars = data_set_tensors.scalar_tensor.numpy()
+
+        return DataSet(vectors, vectors)
+
 
     def __convert_to_tensors(self, 
-                             data_set :DataSet) -> tuple[torch.FloatTensor, torch.FloatTensor]:
+                             data_set :DataSet) -> DataSetTensors:
         
         vector_tensor = torch.FloatTensor(data_set.vectors)
         scalar_tensor = torch.FloatTensor(data_set.scalars)
