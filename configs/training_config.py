@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+
+@dataclass(frozen = True)
 class TrainingConfig:
     def __init__(self, 
                  batch_size :int, 

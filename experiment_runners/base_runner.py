@@ -26,7 +26,7 @@ class BaseRunner(ABC):
         avg_std :float = 0.0
 
         for iteration in range(self.experiment_config.try_count):
-            if self.experiment_config.verbose:
+            if self.experiment_config.verbose and (iteration + 1) % 10 == 0:
                 print(f"Iteration {iteration + 1} / {self.experiment_config.try_count}")
 
             curr_try_stats = self._run_experiment()
@@ -88,6 +88,20 @@ class BaseRunner(ABC):
         test_set = DataSet(test_vectors, test_scalars)
 
         return training_set, validation_set, test_set
+    
+
+    def _normalize_data_set(self, data_set):
+        data_set.vectors = self._normalize_vector_set(self.vector_scaler)
+        data_set.scalars = self._normalize_scalar_set(self.scalar_scaler)
+        return data_set
+
+
+    def _normalize_vector_set(self, vectors):
+        return self.vector_scaler.transform(vectors)
+
+
+    def _normalize_scalar_set(self, scalars):
+        return self.scalar_scaler.transform(scalars.reshape(-1, 1))
     
 
     def _apply_noise(self, data_set):

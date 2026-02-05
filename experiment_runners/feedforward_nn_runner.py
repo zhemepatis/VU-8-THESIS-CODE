@@ -92,14 +92,10 @@ class FeedforwardNNRunner(BaseRunner):
 
     def __normalize(self, training_set, validation_set, test_set) -> None:
         self.__init_scalers(training_set)
-        
-        training_set.vectors = self.vector_scaler.transform(training_set.vectors)
-        validation_set.vectors = self.vector_scaler.transform(validation_set.vectors)
-        test_set.vectors = self.vector_scaler.transform(test_set.vectors)
 
-        training_set.scalars = self.scalar_scaler.transform(training_set.scalars.reshape(-1, 1))
-        validation_set.scalars = self.scalar_scaler.transform(validation_set.scalars.reshape(-1, 1))
-        test_set.scalars = self.scalar_scaler.transform(test_set.scalars.reshape(-1, 1))
+        training_set = self._normalize_data_set(training_set)
+        validation_set = self._normalize_data_set(validation_set)
+        test_set = self._normalize_data_set(test_set)
 
 
     def __get_data_loader(self, vectors_tensor, scalars_tensor) -> DataLoader:
