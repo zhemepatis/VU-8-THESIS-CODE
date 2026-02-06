@@ -1,6 +1,3 @@
-from dataclasses import dataclass
-
-@dataclass(frozen = True)
 class DataSetConfig:
     def __init__(self, 
                  benchmark_function :function,

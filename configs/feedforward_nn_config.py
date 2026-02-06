@@ -1,6 +1,3 @@
-from dataclasses import dataclass
-
-@dataclass(frozen = True)
 class FeedforwardNNConfig:
     def __init__(self,
                  input_neuron_num :int,

@@ -10,7 +10,6 @@ from models.data_set import DataSet
 from sklearn.model_selection import train_test_split
 import numpy as np
 
-
 class BaseRunner(ABC):
     def __init__(self, 
                  experiment_config :ExperimentConfig, 

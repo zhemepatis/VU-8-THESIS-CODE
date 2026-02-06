@@ -1,6 +1,3 @@
-from dataclasses import dataclass
-
-@dataclass(frozen = True)
 class ExperimentStatistics:
     def __init__(self, 
                  min :float, 

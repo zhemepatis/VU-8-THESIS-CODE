@@ -35,7 +35,11 @@ class FeedforwardNNRunner(BaseRunner):
 
 
     def _run_experiment(self) -> ExperimentStatistics:
-        data_set_raw :DataSet = DataGenerationFunctions.generate_data_set()
+        data_set_raw :DataSet = DataGenerationFunctions.generate_data_set(
+            self.data_set_config.input_dimension, 
+            self.data_set_config.component_domain, 
+            self.data_set_config.data_set_size,
+            self.data_set_config.benchmark_function)
         
         # split data into training, validation, testing data sets
         splits :tuple[DataSet, DataSet, DataSet] = self._split_data_set(data_set_raw)
@@ -74,7 +78,7 @@ class FeedforwardNNRunner(BaseRunner):
         )
 
         loss_func = nn.MSELoss()
-        loss_optimization_func = optim.Adam(self.model.parameters(), lr = self.training_config.learning_rate)
+        loss_optimization_func = optim.Adam(model.parameters(), lr = self.training_config.learning_rate)
 
         model = self.__train(model, loss_func, loss_optimization_func, training_data_loader, validation_data_loader)
 
@@ -110,7 +114,7 @@ class FeedforwardNNRunner(BaseRunner):
             # stop condition
             if epoch_validation_loss < best_validation_loss - self.training_config.delta:
                 best_validation_loss = epoch_validation_loss
-                best_model_state = self.model.state_dict()
+                best_model_state = model.state_dict()
                 patience_tries = 0
             else:
                 patience_tries += 1
