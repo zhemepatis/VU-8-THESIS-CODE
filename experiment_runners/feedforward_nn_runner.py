@@ -21,7 +21,7 @@ from utils.normalization_funcs import NormalizationFunctions
 from utils.tensor_conversion_funcs import TensorConversionFunctions
 
 class FeedforwardNNRunner(BaseRunner):
-    
+
     def __init__(self, 
                  experiment_config :ExperimentConfig, 
                  data_set_config :DataSetConfig, 
@@ -89,48 +89,20 @@ class FeedforwardNNRunner(BaseRunner):
         return self._calculate_statistics(abs_err_set)
 
 
-    def __train(self, model, loss_func, loss_optimization_func, training_data_loader, validation_data_loader) -> None:
-        training_losses = []
-        validation_losses = []
-
+    def __train(self, 
+                model :FeedforwardNN, 
+                loss_func, 
+                loss_optimization_func, 
+                training_data_loader, 
+                validation_data_loader) -> None:
+        
         best_validation_loss = float("inf")
         best_model_state = None
-
         patience_tries = 0
 
         for epoch in range(self.training_config.epoch_limit):
-            # training step
-            model.train()
-            epoch_training_loss = 0.0
-
-            for batch_vectors, batch_scalars in training_data_loader:
-                # pass forward
-                predictions = model(batch_vectors)
-                loss = loss_func(predictions, batch_scalars)
-                
-                # back-propagation
-                loss_optimization_func.zero_grad()
-                loss.backward()
-                loss_optimization_func.step()
-                
-                epoch_training_loss += loss.item() * batch_vectors.size(0)
-
-            # average batch loss
-            epoch_training_loss /= len(training_data_loader.dataset)
-            training_losses.append(epoch_training_loss)
-
-            # validation step
-            model.eval()
-            epoch_validation_loss = 0.0
-            
-            with torch.no_grad():
-                for batch_vectors, batch_scalars in validation_data_loader:
-                    predictions = model(batch_vectors)
-                    loss = loss_func(predictions, batch_scalars)
-                    epoch_validation_loss += loss.item() * batch_vectors.size(0)
-
-            epoch_validation_loss /= len(validation_data_loader.dataset)
-            validation_losses.append(epoch_validation_loss)
+            epoch_training_loss :float = self.__epoch(model, loss_func, loss_optimization_func, training_data_loader)
+            epoch_validation_loss :float = self.__validate(model, loss_func, validation_data_loader)
             
             if self.training_config.verbose and (epoch + 1) % 10 == 0:
                 print(f"[{epoch + 1}] Training loss: {epoch_training_loss:.6f} | Validation loss: {epoch_validation_loss:.6f}")
@@ -154,6 +126,51 @@ class FeedforwardNNRunner(BaseRunner):
 
         return model
     
+
+    def __epoch(self, 
+                model :FeedforwardNN, 
+                loss_func, 
+                loss_optimization_func, 
+                data_loader) -> float:
+        
+        model.train()
+        avg_loss = 0.0
+
+        for batch_vectors, batch_scalars in data_loader:
+            # pass forward
+            predictions = model(batch_vectors)
+            loss = loss_func(predictions, batch_scalars)
+            
+            # back-propagation
+            loss_optimization_func.zero_grad()
+            loss.backward()
+            loss_optimization_func.step()
+            
+            avg_loss += loss.item() * batch_vectors.size(0)
+
+        avg_loss /= len(data_loader.dataset)
+        return avg_loss
+
+
+    # TODO: resolve with model mutability
+    def __validate(self, 
+                   model :FeedforwardNN, 
+                   loss_func, 
+                   data_loader) -> float:
+
+        model.eval()
+        avg_loss = 0.0
+
+        with torch.no_grad():
+            for batch_vectors, batch_scalars in data_loader:
+                predictions = model(batch_vectors)
+
+                loss = loss_func(predictions, batch_scalars)
+                avg_loss += loss.item() * batch_vectors.size(0)
+
+        avg_loss /= len(data_loader.dataset)
+        return avg_loss
+
 
     def __test(self, 
                model :FeedforwardNN, 
