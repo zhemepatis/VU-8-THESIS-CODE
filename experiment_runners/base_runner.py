@@ -59,7 +59,19 @@ class BaseRunner(ABC):
     def _split_data_set(self, 
                         raw_data_set :DataSet) -> tuple[DataSet, DataSet, DataSet]:
         
-        # separate training data from validation and test data
+        if self.data_split_config.validation_set_fraction == 0:
+            training_vectors, test_vectors, training_scalars, test_scalars = train_test_split(
+                raw_data_set.vectors, 
+                raw_data_set.scalars, 
+                test_size = (self.data_split_config.validation_set_fraction + self.data_split_config.test_set_fraction), 
+                random_state = 42
+            )
+
+            training_set :DataSet = DataSet(training_vectors, training_scalars)
+            test_set :DataSet = DataSet(test_vectors, test_scalars)
+
+            return training_set, None, test_set
+
         training_vectors, temp_vectors, training_scalars, temp_scalars = train_test_split(
             raw_data_set.vectors, 
             raw_data_set.scalars, 
@@ -67,7 +79,6 @@ class BaseRunner(ABC):
             random_state = 42
         )
 
-        # separate validation data from test data
         validation_vectors, test_vectors, validation_scalars, test_scalars = train_test_split(
             temp_vectors, 
             temp_scalars, 
