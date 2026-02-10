@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 
-import torch
-
 from configs.data_set_config import DataSetConfig
 from configs.data_split_config import DataSplitCofig
 from configs.experiment_config import ExperimentConfig
