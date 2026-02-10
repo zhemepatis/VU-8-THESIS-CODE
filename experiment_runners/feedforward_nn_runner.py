@@ -42,7 +42,7 @@ class FeedforwardNNRunner(BaseRunner):
             self.data_set_config.component_domain, 
             self.data_set_config.data_set_size,
             self.data_set_config.benchmark_function)
-        
+                
         # split data into training, validation, testing data sets
         splits :tuple[DataSet, DataSet, DataSet] = self._split_data_set(data_set_raw)
         
@@ -72,11 +72,12 @@ class FeedforwardNNRunner(BaseRunner):
         training_data_loader = self.__get_data_loader(training_tensors)
         validation_data_loader = self.__get_data_loader(validation_tensors)
 
+
         # create feedforward NN model
         model = FeedforwardNN(
-            input_neuron_num = self.data_set_config.input_dimension, 
-            h1_neuron_num = 70, 
-            output_neuron_num = 1
+            input_neuron_num = self.fnn_config.input_neuron_num, 
+            h1_neuron_num = self.fnn_config.h1_neuron_num, 
+            output_neuron_num = self.fnn_config.output_neuron_num
         )
 
         loss_func = nn.MSELoss()
@@ -101,15 +102,20 @@ class FeedforwardNNRunner(BaseRunner):
                 loss_optimization_func, 
                 training_data_loader, 
                 validation_data_loader) -> None:
-        
+                
         best_validation_loss = float("inf")
         best_model_state = None
         patience_tries = 0
 
         for epoch in range(self.training_config.epoch_limit):
-            epoch_training_loss :float = self.__epoch(model, loss_func, loss_optimization_func, training_data_loader)
-            epoch_validation_loss :float = self.__validate(model, loss_func, validation_data_loader)
-            
+            model_loss_pair = self.__epoch(model, loss_func, loss_optimization_func, training_data_loader)
+            model = model_loss_pair[0]
+            epoch_training_loss :float = model_loss_pair[1]
+
+            model_loss_pair = self.__validate(model, loss_func, validation_data_loader)
+            model = model_loss_pair[0]
+            epoch_validation_loss :float = model_loss_pair[1]
+
             if self.training_config.verbose and (epoch + 1) % 10 == 0:
                 print(f"[{epoch + 1}] Training loss: {epoch_training_loss:.6f} | Validation loss: {epoch_validation_loss:.6f}")
 
@@ -131,7 +137,7 @@ class FeedforwardNNRunner(BaseRunner):
 
         model.load_state_dict(best_model_state)
         return model
-    
+
 
     def __epoch(self, 
                 model :FeedforwardNN, 
@@ -155,10 +161,9 @@ class FeedforwardNNRunner(BaseRunner):
             avg_loss += loss.item() * batch_vectors.size(0)
 
         avg_loss /= len(data_loader.dataset)
-        return avg_loss
+        return model, avg_loss
 
 
-    # TODO: resolve with model mutability
     def __validate(self, 
                    model :FeedforwardNN, 
                    loss_func, 
@@ -175,11 +180,11 @@ class FeedforwardNNRunner(BaseRunner):
                 avg_loss += loss.item() * batch_vectors.size(0)
 
         avg_loss /= len(data_loader.dataset)
-        return avg_loss
+        return model, avg_loss
 
 
-    def __test(self, 
-               model :FeedforwardNN, 
+    def __test(self,
+               model :FeedforwardNN,
                test_tensors :DataSetTensors) -> DataSetTensors:
         
         model.eval()
