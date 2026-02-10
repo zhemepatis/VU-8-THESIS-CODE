@@ -21,8 +21,8 @@ from utils.noise_generation_funcs import NoiseGenerationFunctions
 from utils.normalization_funcs import NormalizationFunctions
 from utils.tensor_conversion_funcs import TensorConversionFunctions
 
-class FeedforwardNNRunner(BaseRunner):
-
+class KNearestNeighborRunner(BaseRunner):
+    
     def __init__(self, 
                  experiment_config :ExperimentConfig, 
                  data_set_config :DataSetConfig, 

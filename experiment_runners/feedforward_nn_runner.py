@@ -1,5 +1,6 @@
 import numpy as np
 from configs.data_set_config import DataSetConfig
+from configs.data_split_config import DataSplitCofig
 from configs.experiment_config import ExperimentConfig
 from configs.feedforward_nn_config import FeedforwardNNConfig
 from configs.training_config import TrainingConfig
@@ -20,16 +21,17 @@ from utils.noise_generation_funcs import NoiseGenerationFunctions
 from utils.normalization_funcs import NormalizationFunctions
 from utils.tensor_conversion_funcs import TensorConversionFunctions
 
-class KNearestNeighborRunner(BaseRunner):
+class FeedforwardNNRunner(BaseRunner):
 
     def __init__(self, 
                  experiment_config :ExperimentConfig, 
                  data_set_config :DataSetConfig, 
+                 data_split_config :DataSplitCofig,
                  noise_config :NoiseConfig, 
                  training_config :TrainingConfig,
                  fnn_config :FeedforwardNNConfig) -> None:
         
-        super().__init__(experiment_config, data_set_config, noise_config)
+        super().__init__(experiment_config, data_set_config, data_split_config, noise_config)
         self.training_config :TrainingConfig = training_config
         self.fnn_config :FeedforwardNNConfig = fnn_config
 

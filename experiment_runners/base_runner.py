@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from configs.data_set_config import DataSetConfig
+from configs.data_split_config import DataSplitCofig
 from configs.experiment_config import ExperimentConfig
 from configs.noise_config import NoiseConfig
 
@@ -14,10 +15,12 @@ class BaseRunner(ABC):
     def __init__(self, 
                  experiment_config :ExperimentConfig, 
                  data_set_config :DataSetConfig, 
+                 data_split_config :DataSplitCofig,
                  noise_config :NoiseConfig) -> None:
         
         self.experiment_config :ExperimentConfig = experiment_config
         self.data_set_config :DataSetConfig = data_set_config
+        self.data_split_config :DataSplitCofig = data_split_config
         self.noise_config :NoiseConfig = noise_config
 
 
@@ -60,7 +63,7 @@ class BaseRunner(ABC):
         training_vectors, temp_vectors, training_scalars, temp_scalars = train_test_split(
             raw_data_set.vectors, 
             raw_data_set.scalars, 
-            test_size = (self.data_set_config.validation_set_fraction + self.data_set_config.test_set_fraction), 
+            test_size = (self.data_split_config.validation_set_fraction + self.data_split_config.test_set_fraction), 
             random_state = 42
         )
 
@@ -68,7 +71,7 @@ class BaseRunner(ABC):
         validation_vectors, test_vectors, validation_scalars, test_scalars = train_test_split(
             temp_vectors, 
             temp_scalars, 
-            test_size = (self.data_set_config.test_set_fraction / (self.data_set_config.test_set_fraction + self.data_set_config.validation_set_fraction)), 
+            test_size = (self.data_split_config.test_set_fraction / (self.data_split_config.test_set_fraction + self.data_split_config.validation_set_fraction)), 
             random_state = 42
         )
 
