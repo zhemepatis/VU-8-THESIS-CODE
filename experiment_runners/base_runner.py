@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+import torch
+
 from configs.data_set_config import DataSetConfig
 from configs.data_split_config import DataSplitCofig
 from configs.experiment_config import ExperimentConfig
@@ -24,7 +26,7 @@ class BaseRunner(ABC):
         self.noise_config :NoiseConfig = noise_config
 
 
-    def run(self) -> ExperimentStatistics:
+    def run(self) -> ExperimentStatistics:      
         avg_min :float = 0.0
         avg_max :float = 0.0
         avg_mean :float = 0.0

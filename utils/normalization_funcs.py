@@ -35,8 +35,8 @@ class NormalizationFunctions:
                              scalar_scaler :MinMaxScaler) -> DataSet:
         
         denormalized_vectors :np.ndarray = NormalizationFunctions.denormalize_vector_set(data_set.vectors, vector_scaler)
-        denormalized_scalars :np.ndarray = NormalizationFunctions.denormalize_scalar_set(data_set.vectors, scalar_scaler)
-        
+        denormalized_scalars :np.ndarray = NormalizationFunctions.denormalize_scalar_set(data_set.scalars, scalar_scaler)
+
         return DataSet(denormalized_vectors, denormalized_scalars)
     
     
