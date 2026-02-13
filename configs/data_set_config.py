@@ -1,6 +1,6 @@
 class DataSetConfig:
     def __init__(self, 
-                 benchmark_function :function,
+                 benchmark_function,
                  input_dimension :int, 
                  component_domain :list[int], 
                  data_set_size :int) -> None:
