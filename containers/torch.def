@@ -1,0 +1,8 @@
+Bootstrap: docker
+From: pytorch/pytorch:latest
+
+%post
+    pip install --no-cache-dir numpy scikit-learn
+
+%runscript
+    exec python "$@"

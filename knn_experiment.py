@@ -33,7 +33,7 @@ knn_config :KNearestNeighborsConfig = KNearestNeighborsConfig(
 # neighbor_counts = [1, 3]
 neighbor_counts = [1]
 # data_set_sizes = [1_000, 10_000, 100_000, 1_000_000, 10_000_000]
-data_set_sizes = [100_000]
+data_set_sizes = [1_000]
 
 noise_configs = [
     None,

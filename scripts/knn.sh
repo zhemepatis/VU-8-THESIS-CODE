@@ -2,5 +2,4 @@
 #SBATCH -p main
 #SBATCH -n4
 
-singularity build --fakeroot ./containers/torch_env.sif ./containers/torch_env.def
-singularity exec ./containers/torch_env.sif python train.py
+singularity run ./containers/torch.sif knn_experiment.py
