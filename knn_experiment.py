@@ -30,8 +30,10 @@ knn_config :KNearestNeighborsConfig = KNearestNeighborsConfig(
     neighbor_count = 3
 )
 
-neighbor_counts = [1, 3]
-data_set_sizes = [1_000, 10_000, 100_000, 1_000_000, 10_000_000]
+# neighbor_counts = [1, 3]
+neighbor_counts = [1]
+# data_set_sizes = [1_000, 10_000, 100_000, 1_000_000, 10_000_000]
+data_set_sizes = [100_000]
 
 noise_configs = [
     None,
@@ -85,5 +87,3 @@ for curr_neighbor_count in neighbor_counts:
             # print results
             print(f"\nRESULTS: {results.min}\t{results.max}\t{results.mean}\t{results.std}")
             print("\n=====\n")
-
-
