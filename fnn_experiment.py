@@ -2,28 +2,22 @@ import argparse
 from configs.data_set_config import DataSetConfig
 from configs.data_split_config import DataSplitCofig
 from configs.experiment_config import ExperimentConfig
-from configs.k_nearest_neighbors_config import KNearestNeighborsConfig
+from configs.feedforward_nn_config import FeedforwardNNConfig
+from configs.training_config import TrainingConfig
 from configs.noise_config import NoiseConfig
-from experiment_runners.k_nearest_neighbors_runner import KNearestNeighborRunner
+from experiment_runners.feedforward_nn_runner import FeedforwardNNRunner
 from utils.benchmark_funcs import BenchmarkFunctions
 
 if __name__ == "__main__":
 
     # get arguments
-    parser = argparse.ArgumentParser(description = "KNN Experiment Runner")
+    parser = argparse.ArgumentParser(description = "FNN Experiment Runner")
 
     parser.add_argument(
         "--data-set-size",
         type = int,
         required = True,
         help = "Data set size"
-    )
-
-    parser.add_argument(
-        "--neighbors",
-        type = int,
-        required = True,
-        help = "Number of neighbors for KNN"
     )
 
     parser.add_argument(
@@ -64,8 +58,8 @@ if __name__ == "__main__":
     )
 
     data_split_config :DataSplitCofig = DataSplitCofig(
-        training_set_fraction = 0.85,
-        validation_set_fraction = 0,
+        training_set_fraction = 0.7,
+        validation_set_fraction = 0.15,
         test_set_fraction = 0.15
     )
 
@@ -76,13 +70,23 @@ if __name__ == "__main__":
             std = args.noise_std
         )
 
-    knn_config :KNearestNeighborsConfig = KNearestNeighborsConfig(
-        neighbor_count = args.neighbors
+    fnn_config :FeedforwardNNConfig = FeedforwardNNConfig(
+        input_neuron_num = 4,
+        h1_neuron_num = 70,
+        output_neuron_num = 1
+    )
+
+    training_config :TrainingConfig = TrainingConfig(
+        batch_size = 8,
+        delta = 1e-6,
+        epoch_limit = 150,
+        patience_limit = 13,
+        learning_rate = 0.01,
+        verbose = False
     )
 
     # print experiment details
     print(f"EXPERIMENT PARAMETERS:")
-    print(f"neighbor count = {knn_config.neighbor_count}")
 
     if noise_config is not None:
         print(f"noise mean = {noise_config.mean}")
@@ -93,15 +97,17 @@ if __name__ == "__main__":
     print(f"data set size = {data_set_config.data_set_size:_}\n")
 
     # run experiment
-    runner = KNearestNeighborRunner(
+    runner = FeedforwardNNRunner(
         experiment_config,
         data_set_config,
         data_split_config,
         noise_config,
-        knn_config
+        training_config,
+        fnn_config
     )
 
     results = runner.run()
+
 
     # print results
     print(f"\nRESULTS: {results.min}\t{results.max}\t{results.mean}\t{results.std}")
