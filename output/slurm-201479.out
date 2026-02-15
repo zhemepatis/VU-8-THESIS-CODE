@@ -1,0 +1,60 @@
+EXPERIMENT PARAMETERS:
+neighbor count = 1
+noise mean = 0.0
+noise std = 5.0
+data set size = 1_000
+
+<models.experiment_statistics.ExperimentStatistics object at 0x1544537f3dc0>
+
+RESULTS: 0.05069031624444094	27.491581464398585	6.703817585653444	5.373015030221552
+
+=====
+
+EXPERIMENT PARAMETERS:
+neighbor count = 1
+noise mean = 0.0
+noise std = 5.0
+data set size = 10_000
+
+<models.experiment_statistics.ExperimentStatistics object at 0x150ada4bbdc0>
+
+RESULTS: 0.0063641276880430555	21.90253445243112	5.0215654592741	3.8154535454733622
+
+=====
+
+EXPERIMENT PARAMETERS:
+neighbor count = 1
+noise mean = 0.0
+noise std = 5.0
+data set size = 100_000
+
+<models.experiment_statistics.ExperimentStatistics object at 0x1504549e3dc0>
+
+RESULTS: 0.0005114543783944203	22.294032180410767	4.343954886216964	3.280091691359753
+
+=====
+
+EXPERIMENT PARAMETERS:
+neighbor count = 1
+noise mean = 0.0
+noise std = 5.0
+data set size = 1_000_000
+
+<models.experiment_statistics.ExperimentStatistics object at 0x14eb5fc57dc0>
+
+RESULTS: 3.7742017040436335e-05	23.57769638028992	4.103632741706946	3.1025681791190647
+
+=====
+
+EXPERIMENT PARAMETERS:
+neighbor count = 1
+noise mean = 0.0
+noise std = 5.0
+data set size = 10_000_000
+
+<models.experiment_statistics.ExperimentStatistics object at 0x14b1c582bdc0>
+
+RESULTS: 2.7229302745812587e-06	25.09160567903451	4.026221736187143	3.0423506066334465
+
+=====
+
