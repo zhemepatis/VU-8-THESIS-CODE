@@ -24,7 +24,7 @@ class KNearestNeighborRunner(BaseRunner):
         
         super().__init__(experiment_config, data_set_config, data_split_config, noise_config)
         self.knn_config :KNearestNeighborsConfig = knn_config
-
+        
 
     def _run_experiment(self) -> ExperimentStatistics:
         data_set_raw :DataSet = DataGenerationFunctions.generate_data_set(
