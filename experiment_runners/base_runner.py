@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from multiprocessing import Pool
 
 from configs.data_set_config import DataSetConfig
 from configs.data_split_config import DataSplitCofig
@@ -30,13 +31,11 @@ class BaseRunner(ABC):
         avg_mean :float = 0.0
         avg_std :float = 0.0
 
-        for iteration in range(self.experiment_config.try_count):
-            if self.experiment_config.verbose and (iteration + 1) % 10 == 0:
-                print(f"Iteration {iteration + 1} / {self.experiment_config.try_count}")
+        with Pool(self.experiment_config.process_number) as pool:
+            results = pool.map(self._run_experiment(), range(self.experiment_config.try_count))
 
-            curr_try_stats = self._run_experiment()
-
-            # save current try statistics
+        # accumulate statistics
+        for curr_try_stats in results:
             avg_min += curr_try_stats.min
             avg_max += curr_try_stats.max
             avg_mean += curr_try_stats.mean
