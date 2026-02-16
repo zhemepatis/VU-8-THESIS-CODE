@@ -21,8 +21,8 @@ singularity run ./containers/torch.sif fnn_experiment.py \
     --noise-mean 0 \
     --noise-std 0.5
 
-singularity run ./containers/torch.sif fnn_experiment.py \
-    --processes 10 \
-    --data-set-size 1000000 \
-    --noise-mean 0 \
-    --noise-std 0.5
+# singularity run ./containers/torch.sif fnn_experiment.py \
+#     --processes 10 \
+#     --data-set-size 1000000 \
+#     --noise-mean 0 \
+#     --noise-std 0.5
