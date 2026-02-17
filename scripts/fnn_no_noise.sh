@@ -12,7 +12,7 @@
 #     --data-set-size 10000
 
 singularity run ./containers/torch.sif fnn_experiment.py \
-    --processes 10 \
+    --processes 5 \
     --data-set-size 100000
 
 # singularity run ./containers/torch.sif fnn_experiment.py \

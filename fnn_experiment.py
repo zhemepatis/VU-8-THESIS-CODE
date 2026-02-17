@@ -97,7 +97,7 @@ if __name__ == "__main__":
     print(f"data set size = {data_set_config.data_set_size:_}\n")
 
     # run experiment
-    torch.set_num_threads(args.processes)
+    torch.set_num_threads(2)
 
     runner = FeedforwardNNRunner(
         experiment_config,
