@@ -6,6 +6,7 @@ from configs.feedforward_nn_config import FeedforwardNNConfig
 from configs.training_config import TrainingConfig
 from configs.noise_config import NoiseConfig
 from experiment_runners.feedforward_nn_runner import FeedforwardNNRunner
+import torch
 from utils.benchmark_funcs import BenchmarkFunctions
 
 if __name__ == "__main__":
@@ -96,6 +97,8 @@ if __name__ == "__main__":
     print(f"data set size = {data_set_config.data_set_size:_}\n")
 
     # run experiment
+    torch.set_num_threads(args.processes)
+
     runner = FeedforwardNNRunner(
         experiment_config,
         data_set_config,
