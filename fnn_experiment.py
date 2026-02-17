@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # setup experiment
     experiment_config :ExperimentConfig = ExperimentConfig(
         process_number = args.processes,
-        try_count = 100
+        try_count = 10
     )
 
     data_set_config :DataSetConfig = DataSetConfig(
