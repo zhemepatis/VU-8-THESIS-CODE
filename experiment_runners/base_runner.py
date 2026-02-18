@@ -31,12 +31,13 @@ class BaseRunner(ABC):
         avg_mean :float = 0.0
         avg_std :float = 0.0
 
-        with Pool(self.experiment_config.process_number) as pool:
-            runners = [self for _ in range(self.experiment_config.try_count)]
-            results = pool.map(self._experiment_wrapper, runners)
+        for iteration in range(self.experiment_config.try_count):
+            if self.experiment_config.verbose and (iteration + 1) % 10 == 0:
+                print(f"Iteration {iteration + 1} / {self.experiment_config.try_count}")
 
-        # accumulate statistics
-        for curr_try_stats in results:
+            curr_try_stats = self._run_experiment()
+
+            # save current try statistics
             avg_min += curr_try_stats.min
             avg_max += curr_try_stats.max
             avg_mean += curr_try_stats.mean

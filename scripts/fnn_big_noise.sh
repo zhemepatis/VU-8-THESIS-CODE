@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH -p main
-#SBATCH -n10
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
 
 # singularity run ./containers/torch.sif fnn_experiment.py \
 #     --processes 10 \
