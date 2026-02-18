@@ -32,9 +32,6 @@ class BaseRunner(ABC):
         avg_std :float = 0.0
 
         for iteration in range(self.experiment_config.try_count):
-            if self.experiment_config.verbose and (iteration + 1) % 10 == 0:
-                print(f"Iteration {iteration + 1} / {self.experiment_config.try_count}")
-
             curr_try_stats = self._run_experiment()
 
             # save current try statistics
