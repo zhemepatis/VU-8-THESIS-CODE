@@ -115,4 +115,3 @@ if __name__ == "__main__":
     # print results
     print(f"RESULTS: {results.min}\t{results.max}\t{results.mean}\t{results.std}")
     print(f"TIME: {end - start}")
-    print("\n=====\n")

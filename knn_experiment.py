@@ -104,4 +104,3 @@ if __name__ == "__main__":
 
     # print results
     print(f"\nRESULTS: {results.min}\t{results.max}\t{results.mean}\t{results.std}")
-    print("\n=====\n")
