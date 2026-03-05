@@ -1,5 +1,6 @@
 #!/bin/bash
 #SBATCH -p main
+#SBATCH --output=output/slurm-%A_%a.out
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=10
 #SBATCH --array=0-4
