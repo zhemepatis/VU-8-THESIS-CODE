@@ -32,8 +32,7 @@ class BaseRunner(ABC):
         avg_std :float = 0.0
 
         with Pool(self.experiment_config.process_number) as pool:
-            runners = [self for _ in range(self.experiment_config.try_count)]
-            results = pool.map(self._experiment_wrapper, runners)
+            results = pool.starmap(self._run_experiment, [() for _ in range(self.experiment_config.try_count)])
 
         # accumulate statistics
         for curr_try_stats in results:
@@ -50,10 +49,6 @@ class BaseRunner(ABC):
 
         return ExperimentStatistics(avg_min, avg_max, avg_mean, avg_std)
 
-    
-    def _experiment_wrapper(self, runner):
-        return runner._run_experiment()
-    
 
     @abstractmethod
     def _run_experiment(self) -> ExperimentStatistics:

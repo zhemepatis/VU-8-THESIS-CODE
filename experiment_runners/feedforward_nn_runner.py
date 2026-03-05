@@ -72,7 +72,6 @@ class FeedforwardNNRunner(BaseRunner):
         training_data_loader = self.__get_data_loader(training_tensors)
         validation_data_loader = self.__get_data_loader(validation_tensors)
 
-
         # create feedforward NN model
         model = FeedforwardNN(
             input_neuron_num = self.fnn_config.input_neuron_num, 
@@ -127,8 +126,10 @@ class FeedforwardNNRunner(BaseRunner):
             else:
                 patience_tries += 1
 
-                if self.training_config.verbose and patience_tries >= self.training_config.patience_limit:
-                    print(f"Early stopping at epoch {epoch + 1} (no improvement for {self.training_config.patience_limit} epochs).")
+                if patience_tries >= self.training_config.patience_limit:
+                    if self.training_config.verbose:
+                        print(f"Early stopping at epoch {epoch + 1} (no improvement for {self.training_config.patience_limit} epochs).")
+                    
                     break
 
         # load best model

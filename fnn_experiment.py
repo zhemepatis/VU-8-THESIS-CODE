@@ -1,4 +1,5 @@
 import argparse
+import time
 from configs.data_set_config import DataSetConfig
 from configs.data_split_config import DataSplitCofig
 from configs.experiment_config import ExperimentConfig
@@ -6,7 +7,6 @@ from configs.feedforward_nn_config import FeedforwardNNConfig
 from configs.training_config import TrainingConfig
 from configs.noise_config import NoiseConfig
 from experiment_runners.feedforward_nn_runner import FeedforwardNNRunner
-import torch
 from utils.benchmark_funcs import BenchmarkFunctions
 
 if __name__ == "__main__":
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # setup experiment
     experiment_config :ExperimentConfig = ExperimentConfig(
         process_number = args.processes,
-        try_count = 10
+        try_count = 1
     )
 
     data_set_config :DataSetConfig = DataSetConfig(
@@ -106,9 +106,13 @@ if __name__ == "__main__":
         fnn_config
     )
 
+    start = time.time()
+    
     results = runner.run()
-
+    
+    end = time.time()
 
     # print results
-    print(f"\nRESULTS: {results.min}\t{results.max}\t{results.mean}\t{results.std}")
+    print(f"RESULTS: {results.min}\t{results.max}\t{results.mean}\t{results.std}")
+    print(f"TIME: {end - start}")
     print("\n=====\n")
