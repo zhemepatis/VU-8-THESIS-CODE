@@ -9,7 +9,5 @@ SIZE=${DATASET_SIZES[$SLURM_ARRAY_TASK_ID]}
 
 singularity run ./containers/torch.sif knn_experiment.py \
     --processes 10 \
-    --neighbors 3 \
-    --data-set-size $SIZE \
-    --noise-mean 0 \
-    --noise-std 0.5
+    --neighbors 32 \
+    --data-set-size $SIZE
