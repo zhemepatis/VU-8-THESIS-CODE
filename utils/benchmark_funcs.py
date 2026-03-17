@@ -3,13 +3,15 @@ import numpy as np
 class BenchmarkFunctions:
 
     @staticmethod
-    def sphere_func(vector):
+    def sphere_func(vector :list[int]) -> np.ndarray:
         vector_squared = vector**2
         scalar = np.sum(vector_squared)
         return scalar
     
     @staticmethod
-    def rastrigin_func(vector, a = 5):
+    def rastrigin_func(vector :list[int], 
+                       a :int = 5) -> np.ndarray:
+    
         vector_diff = vector**2 - a * np.cos(2 * np.pi * vector)
         scalar = a * len(vector) + np.sum(vector_diff)
         return scalar

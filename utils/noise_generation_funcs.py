@@ -5,9 +5,9 @@ from models.data_set import DataSet
 class NoiseGenerationFunctions:
 
     @staticmethod
-    def apply_gaussian_noise(mean :float, 
-                                std :float,
-                                clean_data_set :DataSet) -> DataSet:
+    def apply_gaussian_noise(mean :float,
+                             std :float,
+                             clean_data_set :DataSet) -> DataSet:
         
         noise = np.random.normal(mean, std, len(clean_data_set.scalars))
         noisy_scalars = clean_data_set.scalars + noise
