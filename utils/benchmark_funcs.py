@@ -9,8 +9,16 @@ class BenchmarkFunctions:
         return scalar
     
     @staticmethod
+    def rosenbrock_func(vector :list[int], 
+                       a :int = 100) -> np.ndarray:
+    
+        x = np.array(vector, dtype=float)
+        scalar = np.sum(a * (x[1:] - x[:-1]**2)**2 + (1 - x[:-1])**2)
+        return np.array(scalar)
+    
+    @staticmethod
     def rastrigin_func(vector :list[int], 
-                       a :int = 5) -> np.ndarray:
+                       a :int = 10) -> np.ndarray:
     
         vector_diff = vector**2 - a * np.cos(2 * np.pi * vector)
         scalar = a * len(vector) + np.sum(vector_diff)
