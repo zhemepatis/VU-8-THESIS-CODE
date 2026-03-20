@@ -85,17 +85,6 @@ if __name__ == "__main__":
         verbose = False
     )
 
-    # print experiment details
-    print(f"EXPERIMENT PARAMETERS:")
-
-    if noise_config is not None:
-        print(f"noise mean = {noise_config.mean}")
-        print(f"noise std = {noise_config.std}")
-    else:
-        print("no noise applied")
-    
-    print(f"data set size = {data_set_config.data_set_size:_}\n")
-
     # run experiment
     runner = FeedforwardNNRunner(
         experiment_config,
@@ -107,11 +96,8 @@ if __name__ == "__main__":
     )
 
     start = time.time()
-    
     results = runner.run()
-    
     end = time.time()
 
     # print results
-    print(f"RESULTS: {results.min}\t{results.max}\t{results.mean}\t{results.std}")
-    print(f"TIME: {end - start}")
+    print(f"{data_set_config.data_set_size},{results.min},{results.max},{results.mean},{results.std},{end - start}")

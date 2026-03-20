@@ -1,4 +1,5 @@
 import argparse
+import time
 from configs.data_set_config import DataSetConfig
 from configs.data_split_config import DataSplitCofig
 from configs.experiment_config import ExperimentConfig
@@ -79,18 +80,6 @@ if __name__ == "__main__":
         neighbor_count = args.neighbors
     )
 
-    # print experiment details
-    print(f"EXPERIMENT PARAMETERS:")
-    print(f"neighbor count = {knn_config.neighbor_count}")
-
-    if noise_config is not None:
-        print(f"noise mean = {noise_config.mean}")
-        print(f"noise std = {noise_config.std}")
-    else:
-        print("no noise applied")
-    
-    print(f"data set size = {data_set_config.data_set_size:_}\n")
-
     # run experiment
     runner = KNearestNeighborRunner(
         experiment_config,
@@ -100,7 +89,9 @@ if __name__ == "__main__":
         knn_config
     )
 
+    start = time.time()
     results = runner.run()
+    end = time.time()
 
     # print results
-    print(f"\nRESULTS: {results.min}\t{results.max}\t{results.mean}\t{results.std}")
+    print(f"{data_set_config.data_set_size},{results.min},{results.max},{results.mean},{results.std},{end - start}")
