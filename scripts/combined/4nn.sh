@@ -1,0 +1,1 @@
+for script in scripts/combined/4nn*.sh; do sbatch "$script"; done

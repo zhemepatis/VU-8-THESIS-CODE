@@ -1,0 +1,1 @@
+for script in scripts/combined/*.sh; do sbatch "$script"; done
