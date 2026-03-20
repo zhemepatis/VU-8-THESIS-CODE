@@ -96,4 +96,4 @@ if __name__ == "__main__":
     time_elapsed :float = end - start
 
     # print results
-    print(f"{data_set_config.data_set_size},{results.min:.8e},{results.max:.8e},{results.mean:.8e},{results.std:.8e},{time_elapsed:.0e}")
+    print(f"{data_set_config.data_set_size},{results.min},{results.max},{results.mean},{results.std},{time_elapsed}")
