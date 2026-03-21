@@ -1,1 +1,3 @@
-for script in scripts/combined/*.sh; do sbatch "$script"; done
+for script in scripts/standalone/*.sh; 
+do sbatch "$script"; 
+done

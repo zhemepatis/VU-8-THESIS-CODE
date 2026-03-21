@@ -1,1 +1,0 @@
-for script in scripts/combined/16nn*.sh; do sbatch "$script"; done
