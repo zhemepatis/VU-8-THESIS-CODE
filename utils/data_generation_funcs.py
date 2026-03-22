@@ -27,7 +27,7 @@ class DataGenerationFunctions:
 
     @staticmethod
     def generate_scalars(vectors :np.ndarray,
-                         benchmark_function) -> np.ndarray:
+                         benchmark_function :callable) -> np.ndarray:
         
         values = np.array([benchmark_function(v) for v in vectors])
         return values

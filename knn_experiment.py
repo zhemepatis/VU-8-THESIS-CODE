@@ -14,13 +14,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = "KNN Experiment Runner")
 
     parser.add_argument(
-        "--benchmark-func",
-        type = int,
-        required = True,
-        help = "Benchmark function"
-    )
-
-    parser.add_argument(
         "--data-set-size",
         type = int,
         required = True,
@@ -64,7 +57,7 @@ if __name__ == "__main__":
     )
 
     data_set_config :DataSetConfig = DataSetConfig(
-        benchmark_function = BenchmarkFunctions.resolve_benchmark_func(args.benchmark_func),
+        benchmark_function = BenchmarkFunctions.sphere_func,
         input_dimension = 4,
         component_domain = [-5.12, 5.12],
         data_set_size = args.data_set_size
@@ -102,6 +95,29 @@ if __name__ == "__main__":
 
     time_elapsed :float = end - start
 
-    # print results
-    print("Method,Data size,Data function,Noise mean,Noise std. deviation,Time elapsed,Abs. error min,Abs. error max,Mean,Abs. error std. deviation")
-    print(f"{knn_config.neighbor_count}nn,{data_set_config.data_set_size},{args.benchmark_func},{noise_config.mean},{noise_config.std},{results.min},{results.max},{results.mean},{results.std},{time_elapsed}")
+    # print results    
+    print(",".join([
+        "Method",
+        "Data size",
+        "Data function",
+        "Noise mean",
+        "Noise std. deviation",
+        "Time elapsed",
+        "Abs. error min",
+        "Abs. error max",
+        "Mean",
+        "Abs. error std. deviation"
+    ]))
+
+    print(",".join([
+        str(knn_config.neighbor_count) + "nn",
+        str(data_set_config.data_set_size),
+        data_set_config.benchmark_function.__name__,
+        str(0 if noise_config is None else noise_config.mean),
+        str(0 if noise_config is None else noise_config.std),
+        str(results.min),
+        str(results.max),
+        str(results.mean),
+        str(results.std),
+        str(time_elapsed)
+    ]))
