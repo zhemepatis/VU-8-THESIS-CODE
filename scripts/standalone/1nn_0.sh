@@ -5,8 +5,8 @@
 #SBATCH --cpus-per-task=10
 #SBATCH --array=0-4
 
-RESULTS_FILE="output/raw_results.csv"
-LOCK_FILE="output/raw_results.lock"
+RESULTS_FILE="output/1nn_0.csv"
+LOCK_FILE="output/1nn_0.lock"
 
 DATASET_SIZES=(1000 10000 100000 1000000 10000000)
 SIZE=${DATASET_SIZES[$SLURM_ARRAY_TASK_ID]}
