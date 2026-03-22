@@ -95,20 +95,7 @@ if __name__ == "__main__":
 
     time_elapsed :float = end - start
 
-    # print results    
-    print(",".join([
-        "Method",
-        "Data size",
-        "Data function",
-        "Noise mean",
-        "Noise std. deviation",
-        "Time elapsed",
-        "Abs. error min",
-        "Abs. error max",
-        "Mean",
-        "Abs. error std. deviation"
-    ]))
-
+    # print results
     print(",".join([
         str(knn_config.neighbor_count) + "nn",
         str(data_set_config.data_set_size),

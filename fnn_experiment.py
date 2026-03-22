@@ -103,19 +103,6 @@ if __name__ == "__main__":
 
     # print results
     print(",".join([
-        "Method",
-        "Data size",
-        "Data function",
-        "Noise mean",
-        "Noise std. deviation",
-        "Time elapsed",
-        "Abs. error min",
-        "Abs. error max",
-        "Mean",
-        "Abs. error std. deviation"
-    ]))
-
-    print(",".join([
         "fnn",
         str(data_set_config.data_set_size),
         data_set_config.benchmark_function.__name__,
