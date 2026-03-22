@@ -15,4 +15,4 @@ singularity run ./containers/torch.sif knn_experiment.py \
     --processes 10 \
     --neighbors 1 \
     --data-set-size 1000 \
-| flock "output/raw_results.lock" tee -a "output/raw_results.lock"
+| flock "$LOCK_FILE" tee -a "$RESULTS_FILE"
