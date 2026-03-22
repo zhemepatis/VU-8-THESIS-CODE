@@ -1,3 +1,5 @@
+#!/bin/bash
+
 mkdir -p "output/graphs"
 
 for dataFile in output/raw/sphere_func/*.csv; 
