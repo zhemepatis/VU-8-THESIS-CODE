@@ -26,7 +26,7 @@ class BenchmarkFunctions:
         return scalar
     
     @staticmethod   
-    def resolve_benchmark_func(benchmark_function_enum :int) -> function:
+    def resolve_benchmark_func(benchmark_function_enum :int):
         
         if benchmark_function_enum == BenchmarkFunction.SPHERE:
             return BenchmarkFunctions.sphere_func
