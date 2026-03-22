@@ -5,13 +5,14 @@
 #SBATCH --cpus-per-task=10
 #SBATCH --array=0-3
 
-RESULTS_FILE="output/fnn_5.csv"
-LOCK_FILE="output/fnn_5.lock"
+RESULTS_FILE="output/raw_results.csv"
+LOCK_FILE="output/raw_results.lock"
 
 DATASET_SIZES=(1000 10000 100000 1000000)
 SIZE=${DATASET_SIZES[$SLURM_ARRAY_TASK_ID]}   
 
 singularity run ./containers/torch.sif fnn_experiment.py \
+    --benchmark-func 0 \
     --processes 10 \
     --data-set-size $SIZE \
     --noise-mean 0 \

@@ -15,6 +15,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = "FNN Experiment Runner")
 
     parser.add_argument(
+        "--benchmark-func",
+        type = int,
+        required = True,
+        help = "Benchmark function"
+    )
+
+    parser.add_argument(
         "--data-set-size",
         type = int,
         required = True,
@@ -51,7 +58,7 @@ if __name__ == "__main__":
     )
 
     data_set_config :DataSetConfig = DataSetConfig(
-        benchmark_function = BenchmarkFunctions.rastrigin_func,
+        benchmark_function = BenchmarkFunctions.resolve_benchmark_func(args.benchmark_func),
         input_dimension = 4,
         component_domain = [-5.12, 5.12],
         data_set_size = args.data_set_size
@@ -102,5 +109,5 @@ if __name__ == "__main__":
     time_elapsed :float = end - start
 
     # print results
-    print("Data size,Min,Max,Mean,Std. deviation,Time elapsed")
-    print(f"{data_set_config.data_set_size},{results.min},{results.max},{results.mean},{results.std},{time_elapsed}")
+    print("Method,Data size,Data function,Noise mean,Noise std. deviation,Time elapsed,Abs. error min,Abs. error max,Mean,Abs. error std. deviation")
+    print(f"fnn,{data_set_config.data_set_size},{args.benchmark_func},{noise_config.mean},{noise_config.std},{results.min},{results.max},{results.mean},{results.std},{time_elapsed}")

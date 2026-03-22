@@ -1,6 +1,7 @@
 import numpy as np
+from models.benchmark_function import BenchmarkFunction
 
-class BenchmarkFunctions:
+class BenchmarkFunctions:            
 
     @staticmethod
     def sphere_func(vector :list[int]) -> np.ndarray:
@@ -23,3 +24,15 @@ class BenchmarkFunctions:
         vector_diff = vector**2 - a * np.cos(2 * np.pi * vector)
         scalar = a * len(vector) + np.sum(vector_diff)
         return scalar
+    
+    @staticmethod   
+    def resolve_benchmark_func(benchmark_function_enum :int) -> function:
+        
+        if benchmark_function_enum == BenchmarkFunction.SPHERE:
+            return BenchmarkFunctions.sphere_func
+        
+        if benchmark_function_enum == BenchmarkFunction.ROSENBROCK:
+            return BenchmarkFunctions.rosenbrock_func
+        
+        if benchmark_function_enum == BenchmarkFunction.RASTRIGIN:
+            return BenchmarkFunctions.rastrigin_func
