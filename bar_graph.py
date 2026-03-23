@@ -52,13 +52,15 @@ if __name__ == "__main__":
 
     # prepare labels
     methods = ["1nn", "2nn", "4nn", "8nn", "16nn", "32nn", "fnn"]
-    data_sizes = ["1 tūkst.", "10 tūkst.", "100 tūkst.", "1 mln.", "10 mln."]
+    method_names = ["1NN", "2NN", "4NN", "8NN", "16NN", "32NN", "DNT"]
+
+    data_sizes = ["1 tūkst. taškų", "10 tūkst. taškų", "100 tūkst. taškų", "1 mln. taškų", "10 mln. taškų"]
     colors = ["coral", "coral", "coral", "coral", "coral", "coral", "cornflowerblue"]
     
     x = np.arange(len(data_sizes))
     width = .8 / len(methods)
 
-    fig, method_axis = plt.subplots(figsize=(9, 5))
+    fig, method_axis = plt.subplots(figsize=(12, 7))
 
     for i, method in enumerate(methods):
         filtered = data_frame[
@@ -80,20 +82,13 @@ if __name__ == "__main__":
 
     # primary x-axis configuration   
     method_ticks = []
-    method_labels = []
     for xi in x:
-        for i, method in enumerate(methods):
-            offset = (i - len(methods) / 2 + 0.5) * width
+        for i, method in enumerate(method_names):
+            offset = (i - len(method_names) / 2 + 0.5) * width
             method_ticks.append(xi + offset)
-            method_labels.append(method)
 
     method_axis.set_xticks(method_ticks)
-    method_axis.set_xticklabels(method_labels, fontsize = 10, rotation = 90)
-
-    method_axis.set_xticks([tick for tick in method_ticks[::len(data_sizes)]] )
-
-    method_axis.set_xticks(method_ticks)
-    method_axis.set_xticklabels(methods * len(data_sizes), fontsize = 10, rotation = 90)
+    method_axis.set_xticklabels(method_names * len(data_sizes), fontsize = 10, rotation = 90)
     method_axis.tick_params(axis = 'x', length = 0)
 
     # secondary x-axis configuration
@@ -107,8 +102,7 @@ if __name__ == "__main__":
     data_size_axis.set_xticks(x)
     data_size_axis.set_xticklabels(data_sizes, fontsize = 10)
 
-
-    data_size_axis.set_title(f"{args.graph_title}\n(noise = 0, std = {args.noise_std})", fontsize = 14)
+    data_size_axis.set_title(f"{args.graph_title}\n(μ = {0.0}, σ = {args.noise_std})", fontsize = 14)
     data_size_axis.set_xlabel("Taškų kiekis duomenų aibėje", labelpad = 15, fontsize = 12)
     
     # y-axis configuration
