@@ -12,7 +12,7 @@ for i in "${!BENCHMARK_FUNCS[@]}"; do
     for j in "${!NOISE_STD_VALUES[@]}"; do
         python bar_graph.py \
             --data-src-filename "output/raw_data.csv" \
-            --graph-filename "output/graphs/${BENCHMARK_FUNCS[$i]}_${NOISE_STD_NAMES[$j]}.png" \
+            --graph-filename "output/graphs/bar_${BENCHMARK_FUNCS[$i]}_${NOISE_STD_NAMES[$j]}.png" \
             --graph-title "${TITLES[$i]}" \
             --benchmark-func "${BENCHMARK_FUNCS[$i]}" \
             --noise-std "${NOISE_STD_VALUES[$j]}"
