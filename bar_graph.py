@@ -67,6 +67,8 @@ if __name__ == "__main__":
             (data_frame["Noise std. deviation"] == args.noise_std)
         ]
 
+        print(filtered)
+
         offset = (i - len(methods) / 2 + 0.5) * width
         method_axis.bar(
             x + offset,
