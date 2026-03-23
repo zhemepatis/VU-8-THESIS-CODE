@@ -1,7 +1,7 @@
 #!/bin/bash
 
-BENCHMARK_FUNCS=("sphere_func" "rastrigin_func")
-TITLES=("Modelių rezultatai su sferos funkcijos generuotais duomenim" "Modelių rezultatai su Rastrigin'o funkcijos generuotais duomenim")
+BENCHMARK_FUNCS=("sphere_func" "rastrigin_func" "rosenbrock_func")
+TITLES=("Modelių rezultatai su sferos funkcijos generuotais duomenim" "Modelių rezultatai su Rastrigin'o funkcijos generuotais duomenim" "Modelių rezultatai su Rosenbrock'o funkcijos generuotais duomenim")
 
 NOISE_STD_VALUES=(0 0.5 5)
 NOISE_STD_NAMES=("0" "0p5" "5")
