@@ -57,9 +57,9 @@ if __name__ == "__main__":
     )
 
     data_set_config :DataSetConfig = DataSetConfig(
-        benchmark_function = BenchmarkFunctions.rastrigin_func,
+        benchmark_function = BenchmarkFunctions.rosenbrock_func,
         input_dimension = 4,
-        component_domain = [-5.12, 5.12],
+        component_domain = [-5, 10],
         data_set_size = args.data_set_size
     )
 
