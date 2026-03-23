@@ -102,9 +102,9 @@ if __name__ == "__main__":
         data_set_config.benchmark_function.__name__,
         str(0 if noise_config is None else noise_config.mean),
         str(0 if noise_config is None else noise_config.std),
-        str(time_elapsed),
         str(results.min),
         str(results.max),
         str(results.mean),
-        str(results.std)
+        str(results.std),
+        str(time_elapsed)
     ]))
