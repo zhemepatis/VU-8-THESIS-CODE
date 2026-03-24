@@ -23,13 +23,6 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--graph-title",
-        type = str,
-        required = True,
-        help = "Graph title"
-    )
-
-    parser.add_argument(
         "--benchmark-func",
         type = str,
         default = None,
@@ -102,7 +95,6 @@ if __name__ == "__main__":
     data_size_axis.set_xticks(x)
     data_size_axis.set_xticklabels(data_sizes, fontsize = 10)
 
-    data_size_axis.set_title(f"{args.graph_title}\n(μ = {0.0}, σ = {args.noise_std})", fontsize = 14)
     data_size_axis.set_xlabel("Taškų kiekis duomenų aibėje", labelpad = 15, fontsize = 12)
     
     # y-axis configuration
