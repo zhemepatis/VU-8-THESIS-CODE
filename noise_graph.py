@@ -70,7 +70,7 @@ if __name__ == "__main__":
                 color = colors[i],
                 edgecolor = "white",
                 label = f"μ = {0.0}, σ = {noise_std_deviation:.1f}",
-                alpha = .75,
+                alpha = .75
             )
 
         ax.set_xticks(x)
@@ -83,4 +83,4 @@ if __name__ == "__main__":
     plt.legend()
 
     plt.tight_layout()
-    plt.show()
+    plt.savefig(args.graph_filename)
