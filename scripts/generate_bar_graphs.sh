@@ -2,8 +2,8 @@
 
 BENCHMARK_FUNCS=("sphere_func" "rastrigin_func" "rosenbrock_func")
 
-NOISE_STD_VALUES=(0 0.5 5)
-NOISE_STD_NAMES=("0" "0p5" "5")
+NOISE_STD_VALUES=(0 5)
+NOISE_STD_NAMES=("0" "5")
 
 mkdir -p "output/graphs"
 

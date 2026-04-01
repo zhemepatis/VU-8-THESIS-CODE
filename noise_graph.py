@@ -44,8 +44,8 @@ if __name__ == "__main__":
     if args.method != "fnn":
         data_sizes.append("10 mln.")
 
-    noise_levels = [0, .5, 5]
-    colors = ["steelblue", "coral", "mediumseagreen"]
+    noise_levels = [0, 5]
+    colors = ["steelblue", "mediumseagreen"]
 
     # plot graphs
     x = np.arange(len(data_sizes))
