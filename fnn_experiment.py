@@ -77,7 +77,7 @@ if __name__ == "__main__":
     )
 
     training_config :TrainingConfig = TrainingConfig(
-        batch_size = 64,
+        batch_size = 32,
         delta = 1e-6,
         epoch_limit = 150,
         patience_limit = 13,
