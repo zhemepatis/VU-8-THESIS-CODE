@@ -1,16 +1,14 @@
 import pandas
 import argparse
 
-
 def format_data_size(n):
-    """Format number with spaces as thousands separator (Lithuanian style)."""
     return f"{n:,}".replace(",", " ")
 
 
 def format_value(val, threshold=1e-6):
-    """Format a float value, using <10^{-6} notation for very small numbers."""
     if val < threshold:
         return r"$<10^{-6}$"
+    
     return f"{val:.6f}"
 
 
@@ -21,37 +19,44 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--data-src-filename",
-        type=str,
-        required=True,
-        help="Source data filename"
+        type = str,
+        required = True,
+        help = "Source data filename"
     )
 
     parser.add_argument(
-        "--noise-std",
-        type=float,
-        default=None,
-        help="Gaussian noise std"
+        "--table-filename",
+        type = str,
+        required = True,
+        help = "Table filename"
     )
 
     parser.add_argument(
         "--method",
-        type=str,
-        default=None,
-        help="Filter by method name"
+        type = str,
+        required = True,
+        help = "Filter by method name"
     )
 
     parser.add_argument(
-        "--data-function",
-        type=str,
-        default=None,
-        help="Filter by data function name"
+        "--benchmark-func",
+        type = str,
+        required = True,
+        help = "Filter by data function name"
+    )
+
+    parser.add_argument(
+        "--noise-std",
+        type = float,
+        required = True,
+        help = "Gaussian noise std"
     )
 
     parser.add_argument(
         "--caption",
-        type=str,
-        default=None,
-        help="Custom caption for the table (LaTeX string)"
+        type = str,
+        required = True,
+        help = "Caption for the table"
     )
 
     args = parser.parse_args()
@@ -60,35 +65,16 @@ if __name__ == "__main__":
     data_frame = pandas.read_csv(args.data_src_filename)
     data_frame.columns = data_frame.columns.str.strip()
     data_frame = data_frame.sort_values(
-        by=["Method", "Data function", "Noise std. deviation", "Data size"]
-    ).reset_index(drop=True)
+        by = ["Method", "Data function", "Noise std. deviation", "Data size"]
+    ).reset_index(drop = True)
 
     # apply filters
-    if args.method is not None:
-        data_frame = data_frame[data_frame["Method"] == args.method]
-
-    if args.data_function is not None:
-        data_frame = data_frame[data_frame["Data function"] == args.data_function]
-
-    if args.noise_std is not None:
-        data_frame = data_frame[data_frame["Noise std. deviation"] == args.noise_std]
-
-    # group by data size and compute stats
-    grouped = (
-        data_frame
-        .groupby("Data size")["Error"]   # adjust "Error" column name if needed
-        .agg(Min="min", Max="max", Mean="mean", Std="std")
-        .reset_index()
-        .sort_values("Data size")
-    )
-
-    # build caption
-    if args.caption:
-        caption = args.caption
-    else:
-        method_str = args.method if args.method else "?"
-        noise_str = args.noise_std if args.noise_std is not None else "0"
-        caption = rf"$k$ artimiausių kaimynų metodo rezultatai ($k = 1$, $\mu = 0$, $\sigma = {noise_str}$)"
+    filtered = data_frame[
+        (data_frame["Method"] == args.method) &
+        (data_frame["Data function"] == args.benchmark_func) &
+        (data_frame["Noise std. deviation"] == args.noise_std) &
+        ~((args.method == "fnn") & (data_frame["Data size"] == 10_000_000))
+    ]
 
     # generate LaTeX
     lines = []
@@ -101,19 +87,25 @@ if __name__ == "__main__":
         r"\textbf{Vidurkis} & \textbf{Std. nuokrypis} \\ \hline"
     )
 
-    for _, row in grouped.iterrows():
+    for _, row in filtered.iterrows():
         size_str = format_data_size(int(row["Data size"]))
-        min_str  = format_value(row["Min"])
-        max_str  = format_value(row["Max"])
-        mean_str = format_value(row["Mean"])
-        std_str  = format_value(row["Std"])
+        min_str  = format_value(row["Abs. error min"])
+        max_str  = format_value(row["Abs. error max"])
+        mean_str = format_value(row["Abs. error mean"])
+        std_str  = format_value(row["Abs. error std. deviation"])
 
         lines.append(
             f"        {size_str:<12} & {min_str} & {max_str} & {mean_str} & {std_str} \\\\ \\hline"
         )
 
     lines.append(r"    \end{tabular}")
-    lines.append(f"    \\caption{{{caption}}}")
+    lines.append(f"    \\caption{{{args.caption}}}")
     lines.append(r"\end{table}")
 
-    print("\n".join(lines))
+    # print to .tex file
+    output = "\n".join(lines)
+
+    with open(args.table_filename, "w", encoding="utf-8") as file:
+        file.write(output)
+
+    print(f"Table written to {args.table_filename}")

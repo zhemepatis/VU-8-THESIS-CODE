@@ -9,7 +9,7 @@ mkdir -p "output/graphs"
 
 for i in "${!BENCHMARK_FUNCS[@]}"; do
     for j in "${!NOISE_STD_VALUES[@]}"; do
-        python bar_graph.py \
+        python src/generate_bar_graph.py \
             --data-src-filename "output/raw_data.csv" \
             --graph-filename "output/graphs/bar_${BENCHMARK_FUNCS[$i]}_${NOISE_STD_NAMES[$j]}.png" \
             --benchmark-func "${BENCHMARK_FUNCS[$i]}" \
