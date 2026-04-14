@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
-from models.data_set import DataSet
+from src.models.data_set import DataSet
 
 class NormalizationFunctions:
 

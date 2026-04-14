@@ -1,13 +1,13 @@
 import argparse
 import time
-from configs.data_set_config import DataSetConfig
-from configs.data_split_config import DataSplitCofig
-from configs.experiment_config import ExperimentConfig
-from configs.feedforward_nn_config import FeedforwardNNConfig
-from configs.training_config import TrainingConfig
-from configs.noise_config import NoiseConfig
-from experiment_runners.feedforward_nn_runner import FeedforwardNNRunner
-from utils.benchmark_funcs import BenchmarkFunctions
+from src.configs.data_set_config import DataSetConfig
+from src.configs.data_split_config import DataSplitCofig
+from src.configs.experiment_config import ExperimentConfig
+from src.configs.feedforward_nn_config import FeedforwardNNConfig
+from src.configs.training_config import TrainingConfig
+from src.configs.noise_config import NoiseConfig
+from src.experiment_runners.feedforward_nn_runner import FeedforwardNNRunner
+from src.utils.benchmark_funcs import BenchmarkFunctions
 
 if __name__ == "__main__":
 

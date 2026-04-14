@@ -1,12 +1,12 @@
 import argparse
 import time
-from configs.data_set_config import DataSetConfig
-from configs.data_split_config import DataSplitCofig
-from configs.experiment_config import ExperimentConfig
-from configs.k_nearest_neighbors_config import KNearestNeighborsConfig
-from configs.noise_config import NoiseConfig
-from experiment_runners.k_nearest_neighbors_runner import KNearestNeighborRunner
-from utils.benchmark_funcs import BenchmarkFunctions
+from src.configs.data_set_config import DataSetConfig
+from src.configs.data_split_config import DataSplitCofig
+from src.configs.experiment_config import ExperimentConfig
+from src.configs.k_nearest_neighbors_config import KNearestNeighborsConfig
+from src.configs.noise_config import NoiseConfig
+from src.experiment_runners.k_nearest_neighbors_runner import KNearestNeighborRunner
+from src.utils.benchmark_funcs import BenchmarkFunctions
 
 if __name__ == "__main__":
 

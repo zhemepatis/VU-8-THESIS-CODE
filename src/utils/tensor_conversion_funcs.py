@@ -1,6 +1,6 @@
 import torch
-from models.data_set import DataSet
-from models.data_set_tensor import DataSetTensors
+from src.models.data_set import DataSet
+from src.models.data_set_tensor import DataSetTensors
 
 class TensorConversionFunctions:
 
