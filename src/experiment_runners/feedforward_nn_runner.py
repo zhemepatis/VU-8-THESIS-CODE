@@ -1,25 +1,25 @@
 import numpy as np
-from src.configs.data_set_config import DataSetConfig
-from src.configs.data_split_config import DataSplitCofig
-from src.configs.experiment_config import ExperimentConfig
-from src.configs.feedforward_nn_config import FeedforwardNNConfig
-from src.configs.training_config import TrainingConfig
-from src.configs.noise_config import NoiseConfig
-from src.experiment_runners.base_runner import BaseRunner
+from configs.data_set_config import DataSetConfig
+from configs.data_split_config import DataSplitCofig
+from configs.experiment_config import ExperimentConfig
+from configs.feedforward_nn_config import FeedforwardNNConfig
+from configs.training_config import TrainingConfig
+from configs.noise_config import NoiseConfig
+from experiment_runners.base_runner import BaseRunner
 from sklearn.preprocessing import MinMaxScaler
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from src.models.data_set import DataSet
-from src.models.data_set_tensor import DataSetTensors
-from src.neural_network_models.feedforward_nn import FeedforwardNN
+from models.data_set import DataSet
+from models.data_set_tensor import DataSetTensors
+from neural_network_models.feedforward_nn import FeedforwardNN
 from torch.utils.data import DataLoader, TensorDataset
-from src.models.experiment_statistics import ExperimentStatistics
-from src.neural_network_models.feedforward_nn import FeedforwardNN
-from src.utils.data_generation_funcs import DataGenerationFunctions
-from src.utils.noise_generation_funcs import NoiseGenerationFunctions
-from src.utils.normalization_funcs import NormalizationFunctions
-from src.utils.tensor_conversion_funcs import TensorConversionFunctions
+from models.experiment_statistics import ExperimentStatistics
+from neural_network_models.feedforward_nn import FeedforwardNN
+from utils.data_generation_funcs import DataGenerationFunctions
+from utils.noise_generation_funcs import NoiseGenerationFunctions
+from utils.normalization_funcs import NormalizationFunctions
+from utils.tensor_conversion_funcs import TensorConversionFunctions
 
 class FeedforwardNNRunner(BaseRunner):
 

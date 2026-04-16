@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.models.data_set import DataSet
+from models.data_set import DataSet
 
 class NoiseGenerationFunctions:
 

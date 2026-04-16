@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from multiprocessing import Pool
 
-from src.configs.data_set_config import DataSetConfig
-from src.configs.data_split_config import DataSplitCofig
-from src.configs.experiment_config import ExperimentConfig
-from src.configs.noise_config import NoiseConfig
+from configs.data_set_config import DataSetConfig
+from configs.data_split_config import DataSplitCofig
+from configs.experiment_config import ExperimentConfig
+from configs.noise_config import NoiseConfig
 
-from src.models.experiment_statistics import ExperimentStatistics
-from src.models.data_set import DataSet
+from models.experiment_statistics import ExperimentStatistics
+from models.data_set import DataSet
 
 from sklearn.model_selection import train_test_split
 import numpy as np

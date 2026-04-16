@@ -11,7 +11,7 @@ LOCK_FILE="output/raw/4nn_5.lock"
 DATASET_SIZES=(1000 10000 100000 1000000 10000000)
 SIZE=${DATASET_SIZES[$SLURM_ARRAY_TASK_ID]}
 
-singularity run ./containers/torch.sif knn_experiment.py \
+singularity run ./containers/torch.sif src/knn_experiment.py \
     --processes 10 \
     --neighbors 4 \
     --data-set-size $SIZE \

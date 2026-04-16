@@ -11,7 +11,7 @@ LOCK_FILE="output/raw/fnn_0.lock"
 DATASET_SIZES=(1000 10000 100000 1000000)
 SIZE=${DATASET_SIZES[$SLURM_ARRAY_TASK_ID]}
 
-singularity run ./containers/torch.sif fnn_experiment.py \
+singularity run ./containers/torch.sif src/fnn_experiment.py \
     --processes 10 \
     --data-set-size $SIZE \
 | flock "$LOCK_FILE" tee -a "$RESULTS_FILE"
