@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     # prepare labels
     data_functions = ["sphere_func", "rosenbrock_func", "rastrigin_func"]
-    func_names = ["Sferos funkcija", "Rosenbrock'o funkcija", "Rastrigin'o funkcija"]
+    func_names = ["Sferos funkcija", "Rozenbroko funkcija", "Rastrigino funkcija"]
     
     data_sizes = ["1 tūkst.", "10 tūkst.", "100 tūkst.", "1 mln."]
     if args.method != "fnn":
