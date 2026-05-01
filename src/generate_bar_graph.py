@@ -65,7 +65,7 @@ if __name__ == "__main__":
         offset = (i - len(methods) / 2 + 0.5) * width
         method_axis.bar(
             x + offset,
-            filtered["Abs. error mean"].values,
+            filtered["Relative error mean"].values,
             width = width,
             color = colors[i],
             edgecolor = "white",
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     data_size_axis.set_xlabel("Taškų kiekis duomenų aibėje", labelpad = 15, fontsize = 12)
     
     # y-axis configuration
-    method_axis.set_ylabel("Abs. paklaidos vidurkis", labelpad = 15, fontsize = 12)
+    method_axis.set_ylabel("Santykinės paklaidos vidurkis", labelpad = 15, fontsize = 12)
     method_axis.grid(axis = 'y', linestyle = '--', alpha = 0.5)
 
     plt.tight_layout()

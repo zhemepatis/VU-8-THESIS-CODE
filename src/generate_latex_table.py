@@ -89,10 +89,10 @@ if __name__ == "__main__":
 
     for _, row in filtered.iterrows():
         size_str = format_data_size(int(row["Data size"]))
-        min_str  = format_value(row["Abs. error min"])
-        max_str  = format_value(row["Abs. error max"])
-        mean_str = format_value(row["Abs. error mean"])
-        std_str  = format_value(row["Abs. error std. deviation"])
+        min_str  = format_value(row["Relative error min"])
+        max_str  = format_value(row["Relative error max"])
+        mean_str = format_value(row["Relative error mean"])
+        std_str  = format_value(row["Relative error std. deviation"])
 
         lines.append(
             f"        {size_str:<12} & {min_str} & {max_str} & {mean_str} & {std_str} \\\\ \\hline"

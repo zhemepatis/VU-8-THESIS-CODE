@@ -65,7 +65,7 @@ if __name__ == "__main__":
             offset = (i - 1) * width
             ax.bar(
                 x + offset,
-                filtered["Abs. error mean"].values,
+                filtered["Relative error mean"].values,
                 width = width,
                 color = colors[i],
                 edgecolor = "white",
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         ax.set_xlabel("Taškų skaičius", labelpad = 10, fontsize = 12)
         ax.grid(True, axis='y')
 
-    axes[0].set_ylabel("Abs. paklaidos vidurkis", labelpad = 10, fontsize = 12)
+    axes[0].set_ylabel("Santykinės paklaidos vidurkis", labelpad = 10, fontsize = 12)
     plt.legend()
 
     plt.tight_layout()
