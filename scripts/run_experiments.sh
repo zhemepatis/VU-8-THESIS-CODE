@@ -22,6 +22,8 @@ for BENCHMARK_FUNC in "${BENCHMARK_FUNCS[@]}"; do
             fi 
 
             JOB_ID=$(sbatch  --parsable scripts/standalone/fnn.sh $BENCHMARK_FUNC $SIZE $NOISE_STD "output/raw/fnn_${NOISE_STD_INT}.csv")
+            echo "[$BENCHMARK_FUNC | size=$SIZE | noise=$NOISE_STD] queued as job $JOB_ID"
+
             JOB_IDS+=($JOB_ID)
         done
     done
@@ -42,6 +44,8 @@ for NEIGHBOR_COUNT in "${NEIGHBOR_COUNTS[@]}"; do
                 fi 
 
                 JOB_ID=$(sbatch --parsable scripts/standalone/knn.sh $NEIGHBOR_COUNT $BENCHMARK_FUNC $SIZE $NOISE_STD "output/raw/${NEIGHBOR_COUNT}nn_${NOISE_STD_INT}.csv")
+                echo "[$BENCHMARK_FUNC | size=$SIZE | noise=$NOISE_STD] queued as job $JOB_ID"
+
                 JOB_IDS+=($JOB_ID)
             done
         done
