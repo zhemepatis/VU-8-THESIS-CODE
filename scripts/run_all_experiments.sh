@@ -1,7 +1,5 @@
 #!/bin/bash
 
-mkdir -p output/raw
-
 run_fnn_experiments.sh 
 run_knn_experiments.sh 
 

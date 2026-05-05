@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p output/raw
+
 BENCHMARK_FUNCS=(0 1 2)
 BENCHMARK_FUNC_NAMES=("sphere" "rosenbrock" "rastrigin")
 
