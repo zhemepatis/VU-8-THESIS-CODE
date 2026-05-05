@@ -17,7 +17,7 @@ for BENCHMARK_FUNC in "${BENCHMARK_FUNCS[@]}"; do
 
             FUNC_NAME=${BENCHMARK_FUNC_NAMES[$BENCHMARK_FUNC]}
             
-            JOB_ID=$(sbatch --parsable scripts/standalone/fnn_experiment.sh $BENCHMARK_FUNC $SIZE $NOISE_STD "output/raw/fnn_${FUNC_NAME}_${NOISE_STD_INT}.csv")
+            JOB_ID=$(sbatch --parsable scripts/fnn_experiment.sh $BENCHMARK_FUNC $SIZE $NOISE_STD "output/raw/fnn_${FUNC_NAME}_${NOISE_STD_INT}.csv")
             echo "$JOB_ID has been queued"
 
             JOB_IDS+=($JOB_ID)
