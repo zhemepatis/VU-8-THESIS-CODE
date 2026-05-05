@@ -54,7 +54,9 @@ done
 
 # wait for all the tasks to finish
 DEPS=$(IFS=:; echo "${JOB_IDS[*]}")
-sbatch --dependency=afterok:$DEPS --wrap "echo all jobs done"
+sbatch --dependency=afterok:$DEPS
+
+echo "All jobs are finished"
 
 # combine output data
 OUTPUT_FILE="output/raw_$(date +%Y%m%d_%H%M%S).csv"
