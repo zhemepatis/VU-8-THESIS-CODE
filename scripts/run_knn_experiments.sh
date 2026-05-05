@@ -20,7 +20,7 @@ for NEIGHBOR_COUNT in "${NEIGHBOR_COUNTS[@]}"; do
 
                 FUNC_NAME=${BENCHMARK_FUNC_NAMES[$BENCHMARK_FUNC]}
 
-                JOB_ID=$(sbatch --parsable scripts/standalone/knn.sh $NEIGHBOR_COUNT $BENCHMARK_FUNC $SIZE $NOISE_STD "output/raw/${NEIGHBOR_COUNT}nn_${FUNC_NAME}_${NOISE_STD_INT}.csv")
+                JOB_ID=$(sbatch --parsable scripts/standalone/knn_experiment.sh $NEIGHBOR_COUNT $BENCHMARK_FUNC $SIZE $NOISE_STD "output/raw/${NEIGHBOR_COUNT}nn_${FUNC_NAME}_${NOISE_STD_INT}.csv")
                 echo "$JOB_ID has been queued"
 
                 JOB_IDS+=($JOB_ID)
