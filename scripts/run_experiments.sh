@@ -61,15 +61,11 @@ done
 # wait for all the tasks to finish
 DEPS=$(IFS=:; echo "${JOB_IDS[*]}")
 sbatch --dependency=afterok:$DEPS
-
 echo "All jobs are finished"
 
-# combine output data
+# combine raw data
 OUTPUT_FILE="output/raw_$(date +%Y%m%d_%H%M%S).csv"
-
-for FILE in output/raw/*.csv; do
-    cat "$FILE" >> "$OUTPUT_FILE"
-done
+combine_raw_results.sh $OUTPUT_FILE
+echo "Output file: $OUTPUT_FILE"
 
 rm -rf output/raw
-echo "Output file: $OUTPUT_FILE"
