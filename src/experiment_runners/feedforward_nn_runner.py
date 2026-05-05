@@ -39,9 +39,9 @@ class FeedforwardNNRunner(BaseRunner):
     def _run_experiment(self) -> ExperimentStatistics:
         data_set_raw :DataSet = DataGenerationFunctions.generate_data_set(
             self.data_set_config.input_dimension, 
-            self.data_set_config.component_domain, 
+            self.data_set_config.benchmark_func_config.component_domain, 
             self.data_set_config.data_set_size,
-            self.data_set_config.benchmark_function)
+            self.data_set_config.benchmark_func_config.benchmark_func)
                 
         # split data into training, validation, testing data sets
         splits :tuple[DataSet, DataSet, DataSet] = self._split_data_set(data_set_raw)

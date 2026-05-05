@@ -1,5 +1,6 @@
 import argparse
 import time
+from configs.benchmark_func_config import BenchmarkFunctionConfig
 from configs.data_set_config import DataSetConfig
 from configs.data_split_config import DataSplitCofig
 from configs.experiment_config import ExperimentConfig
@@ -13,6 +14,13 @@ if __name__ == "__main__":
 
     # get arguments
     parser = argparse.ArgumentParser(description = "FNN Experiment Runner")
+
+    parser.add_argument(
+        "--benchmark-func",
+        type = int,
+        required = True,
+        help = "Benchmark function integer value"
+    )
 
     parser.add_argument(
         "--data-set-size",
@@ -50,13 +58,19 @@ if __name__ == "__main__":
         try_count = 10
     )
 
+    result = BenchmarkFunctions.resolve_benchmark_func(args.benchmark_func)
+    if result == None:
+        raise "Unsupported benchmark function"
+    
+    benchmark_func, component_domain = result
+    benchmark_func_config :BenchmarkFunctionConfig = BenchmarkFunctionConfig(
+        benchmark_func = benchmark_func,
+        component_domain = component_domain
+    )
+
     data_set_config :DataSetConfig = DataSetConfig(
-        # benchmark_function = BenchmarkFunctions.sphere_func,
-        # benchmark_function = BenchmarkFunctions.rastrigin_func,
-        benchmark_function = BenchmarkFunctions.rosenbrock_func,
+        benchmark_func_config = benchmark_func_config,
         input_dimension = 4,
-        component_domain = [-5.12, 5.12],
-        # component_domain = [-5, 10],
         data_set_size = args.data_set_size
     )
 
@@ -108,7 +122,7 @@ if __name__ == "__main__":
     print(",".join([
         "fnn",
         str(data_set_config.data_set_size),
-        data_set_config.benchmark_function.__name__,
+        data_set_config.benchmark_func_config.benchmark_func.__name__,
         str(0 if noise_config is None else noise_config.mean),
         str(0 if noise_config is None else noise_config.std),
         str(results.min),
