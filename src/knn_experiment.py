@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
     result = BenchmarkFunctions.resolve_benchmark_func(args.benchmark_func)
     if result == None:
-        raise "Unsupported benchmark function"
+        raise ValueError("Unsupported benchmark function")
     
     benchmark_func, component_domain = result
     benchmark_func_config :BenchmarkFunctionConfig = BenchmarkFunctionConfig(
