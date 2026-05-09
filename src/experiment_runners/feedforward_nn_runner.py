@@ -88,8 +88,8 @@ class FeedforwardNNRunner(BaseRunner):
         prediction_tensors :DataSetTensors = self.__test(model, test_tensors)
         prediction_set :DataSet = TensorConversionFunctions.convert_to_data_set(prediction_tensors)
 
-        prediction_set :DataSet = NormalizationFunctions.denormalize_data_set(prediction_set, vector_scaler, scalar_scaler)
-        test_set :DataSet = NormalizationFunctions.denormalize_data_set(test_set, vector_scaler, scalar_scaler)
+        # prediction_set :DataSet = NormalizationFunctions.denormalize_data_set(prediction_set, vector_scaler, scalar_scaler)
+        # test_set :DataSet = NormalizationFunctions.denormalize_data_set(test_set, vector_scaler, scalar_scaler)
 
         relative_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars)
         return self._calculate_statistics(relative_err_set)
