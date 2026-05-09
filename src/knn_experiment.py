@@ -1,13 +1,12 @@
 import argparse
 import time
-from configs.benchmark_func_config import BenchmarkFunctionConfig
 from configs.data_set_config import DataSetConfig
 from configs.data_split_config import DataSplitCofig
 from configs.experiment_config import ExperimentConfig
 from configs.k_nearest_neighbors_config import KNearestNeighborsConfig
 from configs.noise_config import NoiseConfig
 from experiment_runners.k_nearest_neighbors_runner import KNearestNeighborRunner
-from utils.benchmark_funcs import BenchmarkFunctions
+from utils.benchmark_config_funcs import BenchmarkConfigFunctions
 
 if __name__ == "__main__":
 
@@ -16,7 +15,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--benchmark-func",
-        type = int,
+        type = str,
         required = True,
         help = "Benchmark function integer value"
     )
@@ -64,18 +63,8 @@ if __name__ == "__main__":
         try_count = 10
     )
 
-    result = BenchmarkFunctions.resolve_benchmark_func(args.benchmark_func)
-    if result == None:
-        raise ValueError("Unsupported benchmark function")
-    
-    benchmark_func, component_domain = result
-    benchmark_func_config :BenchmarkFunctionConfig = BenchmarkFunctionConfig(
-        benchmark_func = benchmark_func,
-        component_domain = component_domain
-    )
-
     data_set_config :DataSetConfig = DataSetConfig(
-        benchmark_func_config = benchmark_func_config,
+        benchmark_func_config = BenchmarkConfigFunctions.resolve_benchmark_config(args.benchmark_func),
         input_dimension = 4,
         data_set_size = args.data_set_size
     )
