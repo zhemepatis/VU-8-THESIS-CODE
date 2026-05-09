@@ -92,14 +92,6 @@ class BaseRunner(ABC):
         return training_set, validation_set, test_set
 
 
-    def _apply_noise(self, 
-                     data_set :DataSet) -> DataSet:
-        
-        noise = np.random.normal(self.noise_config.mean, self.noise_config.std, len(data_set.scalars))
-        data_set.scalars += noise
-        return data_set
-
-
     def _calculate_statistics(self, absolute_errors) -> ExperimentStatistics:
         curr_min :float = np.min(absolute_errors)
         curr_max :float = np.max(absolute_errors)
