@@ -1,6 +1,7 @@
 #!/bin/bash
 
-OUTPUT_FILE="${1}"
+INPUT_DIR="${1:-output/raw}"
+OUTPUT_FILE="${2:-output/raw_$(date +%Y%m%d_%H%M%S).csv}"
 
 # add the known rows
 echo "Method,Data size,Data function,Noise mean,Noise std. deviation,Relative error min,Relative error max,Relative error mean,Relative error std. deviation,Time elapsed" \
@@ -16,6 +17,6 @@ fnn,10000000,rosenbrock_func,0,5,0,0,0,0,0
 EOF
 
 # add actual results
-for FILE in output/raw/*.csv; do
-    cat "$FILE" >> "$OUTPUT_FILE"
+for FILE in ${INPUT_DIR}/*; do
+  cat "$FILE" >> "$OUTPUT_FILE"
 done

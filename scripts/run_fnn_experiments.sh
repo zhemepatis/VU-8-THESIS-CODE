@@ -2,9 +2,7 @@
 
 mkdir -p output/raw
 
-BENCHMARK_FUNCS=(0 1 2)
-BENCHMARK_FUNC_NAMES=("sphere" "rosenbrock" "rastrigin")
-
+BENCHMARK_FUNCS=("sphere_func" "rosenbrock_func" "rastrigin_func")
 DATA_SET_SIZES=(1000 10000 100000 1000000)
 NOISE=("None" 5)
 
@@ -15,19 +13,12 @@ for BENCHMARK_FUNC in "${BENCHMARK_FUNCS[@]}"; do
             NOISE_STD_INT=0
             if [ $NOISE_STD != "None" ]; then
                 NOISE_STD_INT=$NOISE_STD
-            fi 
-
-            FUNC_NAME=${BENCHMARK_FUNC_NAMES[$BENCHMARK_FUNC]}
+            fi
             
-            JOB_ID=$(sbatch --parsable scripts/fnn_experiment.sh $BENCHMARK_FUNC $SIZE $NOISE_STD "output/raw/fnn_${FUNC_NAME}_${NOISE_STD_INT}.csv")
+            JOB_ID=$(sbatch --parsable scripts/fnn_experiment.sh $BENCHMARK_FUNC $SIZE $NOISE_STD "output/raw/fnn_${BENCHMARK_FUNC}_${NOISE_STD_INT}.csv")
             echo "$JOB_ID has been queued"
 
             JOB_IDS+=($JOB_ID)
         done
     done
 done
-
-# wait for all fnn jobs to finish
-DEPS=$(IFS=:; echo "${JOB_IDS[*]}")
-sbatch --dependency=afterok:$DEPS
-echo "All fnn jobs are finished"
