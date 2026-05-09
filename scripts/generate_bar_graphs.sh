@@ -2,12 +2,11 @@
 
 INPUT_FILE="${1:-output/raw_data.csv}"
 OUTPUT_DIR="${2:-output/graphs}"
+mkdir -p $OUTPUT_DIR
 
 BENCHMARK_FUNCS=("sphere_func" "rastrigin_func" "rosenbrock_func")
 NOISE_STD_VALUES=(0 5)
 NOISE_STD_NAMES=("0" "5")
-
-mkdir -p $OUTPUT_DIR
 
 for i in "${!BENCHMARK_FUNCS[@]}"; do
     for j in "${!NOISE_STD_VALUES[@]}"; do
