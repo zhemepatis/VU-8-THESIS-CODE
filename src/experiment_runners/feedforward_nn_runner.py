@@ -146,9 +146,10 @@ class FeedforwardNNRunner(BaseRunner):
                 loss_optimization_func, 
                 data_loader) -> float:
         
-        model.train()
         avg_loss = 0.0
+        total_samples = 0
 
+        model.train()
         for batch_vectors, batch_scalars in data_loader:
             # pass forward
             predictions = model(batch_vectors)
@@ -159,9 +160,11 @@ class FeedforwardNNRunner(BaseRunner):
             loss.backward()
             loss_optimization_func.step()
             
-            avg_loss += loss.item() * batch_vectors.size(0)
+            sample_num = batch_vectors.size(0)
+            total_samples += sample_num
+            avg_loss += loss.item() * sample_num
 
-        avg_loss /= len(data_loader.dataset)
+        avg_loss /= total_samples
         return model, avg_loss
 
 
@@ -170,17 +173,21 @@ class FeedforwardNNRunner(BaseRunner):
                    loss_func, 
                    data_loader) -> float:
 
-        model.eval()
         avg_loss = 0.0
+        total_samples = 0
 
+        model.eval()
         with torch.no_grad():
             for batch_vectors, batch_scalars in data_loader:
                 predictions = model(batch_vectors)
 
                 loss = loss_func(predictions, batch_scalars)
-                avg_loss += loss.item() * batch_vectors.size(0)
 
-        avg_loss /= len(data_loader.dataset)
+                sample_num = batch_vectors.size(0)
+                total_samples += sample_num
+                avg_loss += loss.item() * sample_num
+
+        avg_loss /= total_samples
         return model, avg_loss
 
 
