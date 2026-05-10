@@ -91,7 +91,7 @@ class FeedforwardNNRunner(BaseRunner):
         prediction_set :DataSet = NormalizationFunctions.denormalize_data_set(prediction_set, vector_scaler, scalar_scaler)
         test_set :DataSet = NormalizationFunctions.denormalize_data_set(test_set, vector_scaler, scalar_scaler)
 
-        relative_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars) / (self.data_set_config.benchmark_func_config.max - self.data_set_config.benchmark_func_config.min)
+        relative_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars)
         return self._calculate_statistics(relative_err_set)
 
 
@@ -107,81 +107,44 @@ class FeedforwardNNRunner(BaseRunner):
         patience_tries = 0
 
         for epoch in range(self.training_config.epoch_limit):
-            model_loss_pair = self.__epoch(model, loss_func, loss_optimization_func, training_data_loader)
-            model = model_loss_pair[0]
-            epoch_training_loss :float = model_loss_pair[1]
-
-            model_loss_pair = self.__validate(model, loss_func, validation_data_loader)
-            model = model_loss_pair[0]
-            epoch_validation_loss :float = model_loss_pair[1]
-
-            if self.training_config.verbose and (epoch + 1) % 10 == 0:
-                print(f"[{epoch + 1}] Training loss: {epoch_training_loss:.6f} | Validation loss: {epoch_validation_loss:.6f}")
-
-            # stop condition
-            if epoch_validation_loss < best_validation_loss - self.training_config.delta:
-                best_validation_loss = epoch_validation_loss
-                best_model_state = model.state_dict()
-                patience_tries = 0
-            else:
-                patience_tries += 1
-
-                if patience_tries >= self.training_config.patience_limit:
-                    if self.training_config.verbose:
-                        print(f"Early stopping at epoch {epoch + 1} (no improvement for {self.training_config.patience_limit} epochs).")
-                    
-                    break
-
-        # load best model
-        if self.training_config.verbose:
-            print(f"Loaded best model with validation loss: {best_validation_loss:.6f}")
-
-        model.load_state_dict(best_model_state)
-        return model
-
-
-    def __epoch(self, 
-                model :FeedforwardNN, 
-                loss_func, 
-                loss_optimization_func, 
-                data_loader) -> float:
         
-        model.train()
-        avg_loss = 0.0
+            model.train()
+            for training_batch_vectors, training_batch_scalars in training_data_loader:
+                
+                # pass forward
+                predictions = model(training_batch_vectors)
+                loss = loss_func(predictions, training_batch_scalars)
+                
+                # back-propagation
+                loss_optimization_func.zero_grad()
+                loss.backward()
+                loss_optimization_func.step()
 
-        for batch_vectors, batch_scalars in data_loader:
-            # pass forward
-            predictions = model(batch_vectors)
-            loss = loss_func(predictions, batch_scalars)
-            
-            # back-propagation
-            loss_optimization_func.zero_grad()
-            loss.backward()
-            loss_optimization_func.step()
-            
-            avg_loss += loss.item() * batch_vectors.size(0)
+                # batch scoped validation
+                avg_validation_loss = 0.0
+                
+                model.eval()
+                with torch.no_grad():
+                    for validation_batch_vectors, validation_batch_scalars in validation_data_loader:
+                        predictions = model(validation_batch_vectors)
 
-        avg_loss /= len(data_loader.dataset)
-        return model, avg_loss
+                        loss = loss_func(predictions, validation_batch_scalars)
+                        avg_validation_loss += loss.item() * validation_batch_vectors.size(0)
 
+                # stop condition
+                if avg_validation_loss < best_validation_loss - self.training_config.delta:
+                    best_validation_loss = avg_validation_loss
+                    best_model_state = model.state_dict()
+                    patience_tries = 0
+                else:
+                    patience_tries += 1
 
-    def __validate(self, 
-                   model :FeedforwardNN, 
-                   loss_func, 
-                   data_loader) -> float:
-
-        model.eval()
-        avg_loss = 0.0
-
-        with torch.no_grad():
-            for batch_vectors, batch_scalars in data_loader:
-                predictions = model(batch_vectors)
-
-                loss = loss_func(predictions, batch_scalars)
-                avg_loss += loss.item() * batch_vectors.size(0)
-
-        avg_loss /= len(data_loader.dataset)
-        return model, avg_loss
+                    if patience_tries >= self.training_config.patience_limit:
+                        if self.training_config.verbose:
+                            print(f"Early stopping at epoch {epoch + 1} (no improvement for {self.training_config.patience_limit} epochs).")
+                        
+                        model.load_state_dict(best_model_state)
+                        return model
 
 
     def __test(self,
