@@ -106,11 +106,12 @@ class FeedforwardNNRunner(BaseRunner):
         best_model_state = None
         patience_tries = 0
 
-        for epoch in range(self.training_config.epoch_limit):
-        
-            model.train()
+        epoch = 0
+        early_stop = False
+        while epoch < self.training_config.epoch_limit and not early_stop: 
             for training_batch_vectors, training_batch_scalars in training_data_loader:
-                
+                model.train()
+
                 # pass forward
                 predictions = model(training_batch_vectors)
                 loss = loss_func(predictions, training_batch_scalars)
@@ -122,29 +123,42 @@ class FeedforwardNNRunner(BaseRunner):
 
                 # batch scoped validation
                 avg_validation_loss = 0.0
+                total_samples = 0
                 
                 model.eval()
                 with torch.no_grad():
                     for validation_batch_vectors, validation_batch_scalars in validation_data_loader:
                         predictions = model(validation_batch_vectors)
-
                         loss = loss_func(predictions, validation_batch_scalars)
-                        avg_validation_loss += loss.item() * validation_batch_vectors.size(0)
+
+                        sample_num = validation_batch_vectors.size(0)
+                        total_samples += sample_num
+
+                        avg_validation_loss += loss.item() * sample_num
+
+                avg_validation_loss /= total_samples
 
                 # stop condition
-                if avg_validation_loss < best_validation_loss - self.training_config.delta:
+                if avg_validation_loss < best_validation_loss + self.training_config.delta:
                     best_validation_loss = avg_validation_loss
                     best_model_state = model.state_dict()
                     patience_tries = 0
-                else:
+                
+                elif patience_tries < self.training_config.patience_limit:
                     patience_tries += 1
+                
+                else:
+                    early_stop = True
+                    break
+            
+            epoch += 1
 
-                    if patience_tries >= self.training_config.patience_limit:
-                        if self.training_config.verbose:
-                            print(f"Early stopping at epoch {epoch + 1} (no improvement for {self.training_config.patience_limit} epochs).")
-                        
-                        model.load_state_dict(best_model_state)
-                        return model
+        # loading best model
+        if self.training_config.verbose:
+            print(f"Early stopping at epoch {epoch + 1} (no improvement for {self.training_config.patience_limit} epochs).")
+
+        model.load_state_dict(best_model_state)
+        return model
 
 
     def __test(self,

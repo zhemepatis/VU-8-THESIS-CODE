@@ -54,7 +54,7 @@ if __name__ == "__main__":
     # setup experiment
     experiment_config :ExperimentConfig = ExperimentConfig(
         process_number = args.processes,
-        try_count = 20
+        try_count = 10
     )
 
     data_set_config :DataSetConfig = DataSetConfig(
@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
     training_config :TrainingConfig = TrainingConfig(
         batch_size = 64,
-        delta = 1e-6,
+        delta = 1e-3,
         epoch_limit = 150,
         patience_limit = 13,
         learning_rate = 0.01,
