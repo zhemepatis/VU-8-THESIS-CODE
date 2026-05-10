@@ -91,7 +91,7 @@ class FeedforwardNNRunner(BaseRunner):
         prediction_set :DataSet = NormalizationFunctions.denormalize_data_set(prediction_set, vector_scaler, scalar_scaler)
         test_set :DataSet = NormalizationFunctions.denormalize_data_set(test_set, vector_scaler, scalar_scaler)
 
-        relative_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars) / (self.data_set_config.benchmark_func_config.max - self.data_set_config.benchmark_func_config.min)
+        relative_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars)
         return self._calculate_statistics(relative_err_set)
 
 
@@ -119,7 +119,7 @@ class FeedforwardNNRunner(BaseRunner):
                 print(f"[{epoch + 1}] Training loss: {epoch_training_loss:.6f} | Validation loss: {epoch_validation_loss:.6f}")
 
             # stop condition
-            if epoch_validation_loss < best_validation_loss - self.training_config.delta:
+            if epoch_validation_loss < best_validation_loss + self.training_config.delta:
                 best_validation_loss = epoch_validation_loss
                 best_model_state = model.state_dict()
                 patience_tries = 0

@@ -60,7 +60,7 @@ class KNearestNeighborRunner(BaseRunner):
         prediction_set :DataSet = NormalizationFunctions.denormalize_data_set(prediction_set, vector_scaler, scalar_scaler)
         test_set :DataSet = NormalizationFunctions.denormalize_data_set(test_set, vector_scaler, scalar_scaler)
 
-        relative_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars) / (self.data_set_config.benchmark_func_config.max - self.data_set_config.benchmark_func_config.min)
+        relative_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars)
         return self._calculate_statistics(relative_err_set)
 
 
