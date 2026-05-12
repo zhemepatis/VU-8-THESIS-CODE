@@ -139,7 +139,7 @@ class FeedforwardNNRunner(BaseRunner):
                 avg_validation_loss /= total_samples
 
                 # stop condition
-                if avg_validation_loss < best_validation_loss + self.training_config.delta:
+                if avg_validation_loss < best_validation_loss - self.training_config.delta:
                     best_validation_loss = avg_validation_loss
                     best_model_state = model.state_dict()
                     patience_tries = 0
