@@ -79,7 +79,7 @@ class FeedforwardNNRunner(BaseRunner):
             output_neuron_num = self.fnn_config.output_neuron_num
         )
 
-        loss_func = nn.MSELoss()
+        loss_func = nn.L1Loss()
         loss_optimization_func = optim.Adam(model.parameters(), lr = self.training_config.learning_rate)
 
         model = self.__train(model, loss_func, loss_optimization_func, training_data_loader, validation_data_loader)
