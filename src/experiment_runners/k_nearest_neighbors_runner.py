@@ -8,6 +8,7 @@ from experiment_runners.base_runner import BaseRunner
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.preprocessing import MinMaxScaler
 from models.data_set import DataSet
+from models.error_statistics import ErrorStatistics
 from models.experiment_statistics import ExperimentStatistics
 from utils.data_generation_funcs import DataGenerationFunctions
 from utils.noise_generation_funcs import NoiseGenerationFunctions
@@ -56,12 +57,30 @@ class KNearestNeighborRunner(BaseRunner):
         
         # evaluate results
         prediction_set :DataSet = self.__test(model, test_set)
+        
+        # absolute error
+        absolute_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars)
+        
+        err_min, err_max, err_mean, err_std = self._calculate_statistics(absolute_err_set)
+        absolute_err_stats :ErrorStatistics = ErrorStatistics(err_min, err_max, err_mean, err_std) 
+        
+        epsilon = 1e-8
 
-        prediction_set :DataSet = NormalizationFunctions.denormalize_data_set(prediction_set, vector_scaler, scalar_scaler)
-        test_set :DataSet = NormalizationFunctions.denormalize_data_set(test_set, vector_scaler, scalar_scaler)
+        # relative error
+        relative_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars) / np.abs(test_set.scalars + epsilon)
+        
+        err_min, err_max, err_mean, err_std = self._calculate_statistics(relative_err_set)
+        relative_err_stats :ErrorStatistics = ErrorStatistics(err_min, err_max, err_mean, err_std) 
 
-        relative_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars)
-        return self._calculate_statistics(relative_err_set)
+        # normalized error
+        min_scalar = min(test_set.scalars)
+        max_scalar = max(test_set.scalars)
+        normalized_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars) / (max_scalar - min_scalar + epsilon)
+        
+        err_min, err_max, err_mean, err_std = self._calculate_statistics(normalized_err_set)
+        normalized_err_stats :ErrorStatistics = ErrorStatistics(err_min, err_max, err_mean, err_std) 
+
+        return ExperimentStatistics(absolute_err_stats, relative_err_stats, normalized_err_stats)
 
 
     def __test(self, 

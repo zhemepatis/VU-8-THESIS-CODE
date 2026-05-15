@@ -6,6 +6,7 @@ from configs.data_split_config import DataSplitCofig
 from configs.experiment_config import ExperimentConfig
 from configs.noise_config import NoiseConfig
 
+from models.error_statistics import ErrorStatistics
 from models.experiment_statistics import ExperimentStatistics
 from models.data_set import DataSet
 
@@ -25,29 +26,27 @@ class BaseRunner(ABC):
         self.noise_config :NoiseConfig = noise_config
 
 
-    def run(self) -> ExperimentStatistics:      
-        avg_min :float = 0.0
-        avg_max :float = 0.0
-        avg_mean :float = 0.0
-        avg_std :float = 0.0
+    def run(self) -> ExperimentStatistics:
+        
+        absolute_err_stats :ErrorStatistics = ErrorStatistics(0.0, 0.0, 0.0, 0.0)
+        relative_err_stats :ErrorStatistics = ErrorStatistics(0.0, 0.0, 0.0, 0.0)
+        normalized_err_stats :ErrorStatistics = ErrorStatistics(0.0, 0.0, 0.0, 0.0)
 
         with Pool(self.experiment_config.process_number) as pool:
             results = pool.starmap(self._run_experiment, [() for _ in range(self.experiment_config.try_count)])
 
         # accumulate statistics
         for curr_try_stats in results:
-            avg_min += curr_try_stats.min
-            avg_max += curr_try_stats.max
-            avg_mean += curr_try_stats.mean
-            avg_std += curr_try_stats.std
+            self.__accumulate_error_stats(absolute_err_stats, curr_try_stats.absolute_error_stats)
+            self.__accumulate_error_stats(relative_err_stats, curr_try_stats.relative_error_stats)
+            self.__accumulate_error_stats(normalized_err_stats, curr_try_stats.normalized_error_stats)
 
         # calculate statistic average
-        avg_min /= self.experiment_config.try_count
-        avg_max /= self.experiment_config.try_count
-        avg_mean /= self.experiment_config.try_count
-        avg_std /= self.experiment_config.try_count
+        self.__average_error_stats(absolute_err_stats, self.experiment_config.try_count)
+        self.__average_error_stats(relative_err_stats, self.experiment_config.try_count)
+        self.__average_error_stats(normalized_err_stats, self.experiment_config.try_count)
 
-        return ExperimentStatistics(avg_min, avg_max, avg_mean, avg_std)
+        return ExperimentStatistics(absolute_err_stats, relative_err_stats, normalized_err_stats)
 
 
     @abstractmethod
@@ -92,10 +91,30 @@ class BaseRunner(ABC):
         return training_set, validation_set, test_set
 
 
-    def _calculate_statistics(self, absolute_errors) -> ExperimentStatistics:
-        curr_min :float = np.min(absolute_errors)
-        curr_max :float = np.max(absolute_errors)
-        curr_mean :float = np.mean(absolute_errors)
-        curr_std :float = np.std(absolute_errors)
+    def _calculate_statistics(self, array) -> ExperimentStatistics:
+        curr_min :float = np.min(array)
+        curr_max :float = np.max(array)
+        curr_mean :float = np.mean(array)
+        curr_std :float = np.std(array)
 
-        return ExperimentStatistics(curr_min, curr_max, curr_mean, curr_std)
+        return curr_min, curr_max, curr_mean, curr_std
+    
+
+    def __accumulate_error_stats(self,
+                                 target_stats: ErrorStatistics,
+                                 source_stats: ErrorStatistics) -> None:
+        
+        target_stats.min += source_stats.min
+        target_stats.max += source_stats.max
+        target_stats.mean += source_stats.mean
+        target_stats.std += source_stats.std
+
+
+    def __average_error_stats(self,
+                              stats: ErrorStatistics,
+                              divisor: int) -> None:
+        
+        stats.min /= divisor
+        stats.max /= divisor
+        stats.mean /= divisor
+        stats.std /= divisor

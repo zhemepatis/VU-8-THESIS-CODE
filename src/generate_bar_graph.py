@@ -65,7 +65,7 @@ if __name__ == "__main__":
         offset = (i - len(methods) / 2 + 0.5) * width
         method_axis.bar(
             x + offset,
-            filtered["Relative error mean"].values,
+            filtered["Absolute error mean"].values,
             width = width,
             color = colors[i],
             edgecolor = "white",

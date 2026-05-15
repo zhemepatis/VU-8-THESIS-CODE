@@ -109,14 +109,32 @@ if __name__ == "__main__":
 
     # print results
     print(",".join([
+        # general info
         "fnn",
         str(data_set_config.data_set_size),
         data_set_config.benchmark_func_config.benchmark_func.__name__,
+        
+        # noise parameters
         str(0 if noise_config is None else noise_config.mean),
         str(0 if noise_config is None else noise_config.std),
-        str(results.min),
-        str(results.max),
-        str(results.mean),
-        str(results.std),
+
+        # absolute error stats
+        str(results.absolute_error_stats.min),
+        str(results.absolute_error_stats.max),
+        str(results.absolute_error_stats.mean),
+        str(results.absolute_error_stats.std),
+
+        # relative error stats
+        str(results.relative_error_stats.min),
+        str(results.relative_error_stats.max),
+        str(results.relative_error_stats.mean),
+        str(results.relative_error_stats.std),
+        
+        # normalized error stats
+        str(results.normalized_error_stats.min),
+        str(results.normalized_error_stats.max),
+        str(results.normalized_error_stats.mean),
+        str(results.normalized_error_stats.std),
+
         str(time_elapsed)
     ]))

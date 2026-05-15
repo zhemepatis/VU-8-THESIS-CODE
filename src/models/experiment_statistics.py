@@ -1,11 +1,11 @@
+from models.error_statistics import ErrorStatistics
+
 class ExperimentStatistics:
     def __init__(self, 
-                 min :float, 
-                 max :float, 
-                 mean :float, 
-                 std :float):
+                 absolute_error_stats :ErrorStatistics, 
+                 relative_error_stats :ErrorStatistics,
+                 normalized_error_stats :ErrorStatistics):
         
-        self.min :float = min
-        self.max :float = max
-        self.mean :float = mean
-        self.std :float = std
+        self.absolute_error_stats :ErrorStatistics = absolute_error_stats
+        self.relative_error_stats :ErrorStatistics = relative_error_stats
+        self.normalized_error_stats :ErrorStatistics = normalized_error_stats
