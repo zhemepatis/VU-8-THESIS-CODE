@@ -79,7 +79,7 @@ if __name__ == "__main__":
         ax.set_xlabel("Taškų skaičius", labelpad = 10, fontsize = 12)
         ax.grid(True, axis='y')
 
-    axes[0].set_ylabel("Santykinės paklaidos vidurkis", labelpad = 10, fontsize = 12)
+    axes[0].set_ylabel("Absoliučiosios paklaidos vidurkis", labelpad = 10, fontsize = 12)
     plt.legend()
 
     plt.tight_layout()
