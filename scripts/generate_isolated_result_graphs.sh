@@ -6,19 +6,19 @@ mkdir -p "$OUTPUT_DIR"
 
 METHODS=("fnn")
 # METHODS=("1nn" "2nn" "4nn" "8nn" "16nn" "32nn" "fnn")
+DATA_FUNCTIONS=("sphere_func" "rosenbrock_func" "rastrigin_func")
 NOISE_STDS=(0 5)
 ERROR_TYPES=("absolute" "normalized" "relative")
 STATS=("std" "mean")
-DATA_FUNCTIONS=("sphere_func" "rosenbrock_func" "rastrigin_func")
 
 for method in "${METHODS[@]}"; do
-    for noise_std in "${NOISE_STDS[@]}"; do
-        for error_type in "${ERROR_TYPES[@]}"; do
-            for stat in "${STATS[@]}"; do
-                for data_function in "${DATA_FUNCTIONS[@]}"; do
+    for data_function in "${DATA_FUNCTIONS[@]}"; do
+        for noise_std in "${NOISE_STDS[@]}"; do
+            for error_type in "${ERROR_TYPES[@]}"; do
+                for stat in "${STATS[@]}"; do
                     OUTPUT_FILE="${OUTPUT_DIR}/${method}_${data_function}_${noise_std}_${error_type}_${stat}.png"
 
-                    python src/generate_isolated_graph.py \
+                    python src/generate_isolated_results_graph.py \
                         --data-src-filename "$INPUT_FILE" \
                         --graph-filename "$OUTPUT_FILE" \
                         --method "$method" \
