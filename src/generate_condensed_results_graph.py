@@ -36,7 +36,26 @@ if __name__ == "__main__":
         help = "Gaussian noise std"
     )
 
+    parser.add_argument(
+        "--metric",
+        type = str,
+        choices = ["mean", "std"],
+        default = "mean",
+        help = "Metric to plot: 'mean' for Absolute error mean, 'std' for Absolute error std. deviation"
+    )
+
     args = parser.parse_args()
+
+    metric_column = "Absolute error mean" if args.metric == "mean" else "Absolute error std. deviation"
+    metric_label = "Absoliučiosios paklaidos vidurkis" if args.metric == "mean" else "Absoliučiosios paklaidos standartinis nuokrypis"
+
+    color_map = {
+        ("mean", True):  "coral",
+        ("mean", False): "#BBA0CA",
+        ("std",  True):  "#DBC2CF",
+        ("std",  False): "#9FA2B2",
+    }
+    color = color_map.get((args.metric, args.noise_std == 0), "gray")
 
     # get data
     data_frame = pandas.read_csv(args.data_src_filename)
@@ -44,12 +63,11 @@ if __name__ == "__main__":
     data_frame = data_frame.sort_values(by=["Method", "Data function", "Noise std. deviation", "Data size"]).reset_index(drop = True)
 
     # prepare labels
-    methods = ["1nn", "2nn", "4nn", "8nn", "16nn", "32nn", "fnn"]
-    method_names = ["1NN", "2NN", "4NN", "8NN", "16NN", "32NN", "DNT"]
+    methods = ["1nn", "2nn", "4nn", "8nn", "16nn", "32nn"]
+    method_names = ["1NN", "2NN", "4NN", "8NN", "16NN", "32NN"]
 
     data_sizes = ["1 tūkst. taškų", "10 tūkst. taškų", "100 tūkst. taškų", "1 mln. taškų", "10 mln. taškų"]
-    colors = ["coral", "coral", "coral", "coral", "coral", "coral", "cornflowerblue"]
-    
+
     x = np.arange(len(data_sizes))
     width = .8 / len(methods)
 
@@ -65,9 +83,9 @@ if __name__ == "__main__":
         offset = (i - len(methods) / 2 + 0.5) * width
         method_axis.bar(
             x + offset,
-            filtered["Absolute error mean"].values,
+            filtered[metric_column].values,
             width = width,
-            color = colors[i],
+            color = color,
             edgecolor = "white",
             alpha = 1,
             label = method
@@ -98,7 +116,7 @@ if __name__ == "__main__":
     data_size_axis.set_xlabel("Taškų kiekis duomenų aibėje", labelpad = 15, fontsize = 12)
     
     # y-axis configuration
-    method_axis.set_ylabel("Absoliučiosios paklaidos vidurkis", labelpad = 15, fontsize = 12)
+    method_axis.set_ylabel(metric_label, labelpad = 15, fontsize = 12)
     method_axis.grid(axis = 'y', linestyle = '--', alpha = 0.5)
 
     plt.tight_layout()
