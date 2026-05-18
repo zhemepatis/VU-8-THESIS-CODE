@@ -18,10 +18,10 @@ class BenchmarkConfigFunctions:
                 return BenchmarkFunctionConfig(BenchmarkFunctions.sphere_func, [-5.12, 5.12], 0, 104.8576)
             
             case BenchmarkFuncEnum.ROSENBROCK_FUNC:
-                return BenchmarkFunctionConfig(BenchmarkFunctions.rosenbrock_func, [-5.12, 5.12], 0, 161.376167)
+                return BenchmarkFunctionConfig(BenchmarkFunctions.rosenbrock_func, [-5.12, 5.12], 0, 240937.699008)
             
             case BenchmarkFuncEnum.RASTRIGIN_FUNC:
-                return BenchmarkFunctionConfig(BenchmarkFunctions.rastrigin_func, [-5.12, 5.12], 0, 240937.699008)
+                return BenchmarkFunctionConfig(BenchmarkFunctions.rastrigin_func, [-5.12, 5.12], 0, 161.376167)
 
 
     @staticmethod

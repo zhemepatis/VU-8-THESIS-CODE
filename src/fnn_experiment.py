@@ -123,12 +123,6 @@ if __name__ == "__main__":
         str(results.absolute_error_stats.max),
         str(results.absolute_error_stats.mean),
         str(results.absolute_error_stats.std),
-
-        # relative error stats
-        str(results.relative_error_stats.min),
-        str(results.relative_error_stats.max),
-        str(results.relative_error_stats.mean),
-        str(results.relative_error_stats.std),
         
         # normalized error stats
         str(results.normalized_error_stats.min),

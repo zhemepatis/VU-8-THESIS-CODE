@@ -107,8 +107,8 @@ class FeedforwardNNRunner(BaseRunner):
         relative_err_stats :ErrorStatistics = ErrorStatistics(err_min, err_max, err_mean, err_std) 
 
         # normalized error
-        min_scalar = min(test_set.scalars)
-        max_scalar = max(test_set.scalars)
+        min_scalar = self.data_set_config.benchmark_func_config.min
+        max_scalar = self.data_set_config.benchmark_func_config.max
         normalized_err_set :np.ndarray = np.abs(prediction_set.scalars - test_set.scalars) / (max_scalar - min_scalar + epsilon)
         
         err_min, err_max, err_mean, err_std = self._calculate_statistics(normalized_err_set)
